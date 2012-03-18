@@ -1,0 +1,8 @@
+*.class
+*.javap
+*~
+target
+.settings
+.project
+.classpath
+.djunitplugin

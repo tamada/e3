@@ -1,0 +1,124 @@
+                        動的エントロピー計測器
+
+                                                        Haruaki Tamada
+                                                        2012.3.18 (Sun)
+
+* はじめに
+
+  このツールは計測対象となるJavaプログラムがどのような命令を実行してい
+るのか計測するためのツールです．Agentとして起動し，クラスファイルのロー
+ド後に計測する命令を挿入するようクラスファイルを書き換え，実行します．
+実行後は，プログラム終了時にそれまで実行された命令列の順番と頻度をcsv形
+式で出力します．
+
+* 計測方法
+
+  このツールでは，プログラムロード時に，クラスファイルを書き換えます．
+具体的には，Javaクラスファイル中の1命令ごとに収集のためのコードを埋め込
+みます．例として，以下のHelloWorldで説明します．
+
+<code>
+public class HelloWorld{
+    public static void main(String[] args){
+        System.out.println("Hello World");
+    }
+}</code>
+
+このプログラムをコンパイルすると，以下のようなバイトコードに変換されま
+す．コンスタントプールは無視しています．
+
+<code>
+public HelloWorld()
+  Code:
+   0:	aload_0
+   1:	invokespecial	#1; //Method java/lang/Object."<init>":()V
+   4:	return
+
+public static void main(java.lang.String[]);
+  Code:
+   0:	getstatic	#2; //Field java/lang/System.out:Ljava/io/PrintStream;
+   3:	ldc	#3; //String Hello World
+   5:	invokevirtual	#4; //Method java/io/PrintStream.println:(Ljava/lang/String;)V
+   8:	return
+</code>
+
+このツールは上記バイトコードの命令1つずつ集計のためのメソッド呼び出しを
+加えていきます．
+
+<code>
+public HelloWorld()
+  Code:
+   0:	ldc	#7; //String HelloWorld
+   2:	ldc	#8; //String <init>
+   4:	invokestatic	#14; //Method entropy/EntropyCounterManager.entryMethod:(Ljava/lang/String;Ljava/lang/String;)V
+   7:	invokestatic	#17; //Method entropy/EntropyCounterManager.aload:()V
+   10:	aload_0
+   11:	invokestatic	#20; //Method entropy/EntropyCounterManager.invokespecial:()V
+   14:	invokespecial	#22; //Method java/lang/Object."<init>":()V
+   17:	invokestatic	#25; //Method entropy/EntropyCounterManager.returnMethod:()V
+   20:	invokestatic	#28; //Method entropy/EntropyCounterManager.returnInsn:()V
+   23:	return
+
+public static void main(java.lang.String[]);
+  Code:
+   0:	ldc	#7; //String HelloWorld
+   2:	ldc	#31; //String main
+   4:	invokestatic	#14; //Method entropy/EntropyCounterManager.entryMethod:(Ljava/lang/String;Ljava/lang/String;)V
+   7:	invokestatic	#34; //Method entropy/EntropyCounterManager.getstatic:()V
+   10:	getstatic	#40; //Field java/lang/System.out:Ljava/io/PrintStream;
+   13:	invokestatic	#43; //Method entropy/EntropyCounterManager.ldc:()V
+   16:	ldc	#45; //String Hello World
+   18:	invokestatic	#48; //Method entropy/EntropyCounterManager.invokevirtual:()V
+   21:	invokevirtual	#54; //Method java/io/PrintStream.println:(Ljava/lang/String;)V
+   24:	invokestatic	#25; //Method entropy/EntropyCounterManager.returnMethod:()V
+   27:	invokestatic	#28; //Method entropy/EntropyCounterManager.returnInsn:()V
+   30:	return
+</code>
+
+プログラムが終了するときに，今まで集計した結果を出力します．
+
+* 使い方
+
+  Java Agentとして起動します．また，必要なところにクラスパスを通してお
+かなくてはいけません．具体的には以下のようなコマンドで実行します．以下
+は複数業に分けて書いていますが，実際は１行で書いてください．配布ファイ
+ルのトップディレクトリで実行します(src, target, pom.xml, READMEの4つの
+ファイル，ディレクトリが存在するディレクトリ)．
+
+$ java -javaagent target/entropy-1.0-SNAPSHOT.jar 
+       -classpath 'target/entropy-1.0-SNAPSHOT.jar:XXXXX'
+       YYYYY
+
+ここで，YYYYYは計測対象となるクラスファイルの指定，XXXXXはYYYYYが存在す
+るディレクトリもしくはjarファイルのパスです．計測しない場合は以下のよう
+に実行されるはずです．
+
+$ java -classpath XXXXX YYYYY
+
+実行後，現在のディレクトリに hoge ディレクトリが作成され，変換されたク
+ラスファイルが出力されるようになっています．そのディレクトリ内のクラス
+ファイルを対象に静的に分析できるようになっています．
+
+** 変換対象
+
+変換対象は src/main/java/entropy/DefaultTransfomFilter.java で制御され
+ています．java, javax, sun, sunw, org.apache, などのパッケージで始まる
+クラスは変換対象外となっています．必要に応じて，上記クラスを書き換えて
+ください．
+
+* 依存ライブラリ
+
+このツールは以下のライブラリを使用しています．
+
+ * Maven 3 (コンパイルに用いています)
+ * asm 4.0 (バイトコードの書き換えに用いています)
+
+ツールのディレクトリで，mvn package と入力すれば，コンパイルされ，
+target ディレクトリに entropy-1.0-SNAPSHOT.jar が作成されます．
+
+* 連絡先
+
+〒603-8555 京都市北区上賀茂本山
+京都産業大学 コンピュータ理工学部
+玉田 春昭
+mailto:tamada@cse.kyoto-su.ac.jp
