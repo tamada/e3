@@ -1,4 +1,4 @@
-package entropy;
+package entropy.exec;
 
 import java.util.ArrayList;
 import java.util.Iterator;

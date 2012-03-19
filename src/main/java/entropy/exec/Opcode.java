@@ -1,4 +1,4 @@
-package entropy;
+package entropy.exec;
 
 public class Opcode{
     private int opcode;

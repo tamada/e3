@@ -13,9 +13,15 @@
 
 * 計測方法
 
-  このツールでは，プログラムロード時に，クラスファイルを書き換えます．
-具体的には，Javaクラスファイル中の1命令ごとに収集のためのコードを埋め込
-みます．例として，以下のHelloWorldで説明します．
+  このツールは，２種類の実行方法があります．１つ目は，計測するためのコー
+ドを埋め込む変換を静的に行う方法です．もう一つはプログラムロード時に，
+クラスファイルを書き換え，そのまま実行する方法です．両方とも，プログラ
+ム終了時に計測結果を標準出力に出力します．出力内容はインストラクション
+の実行トレースと，その頻度です．
+
+  本ツールでは，実行されたインストラクションの計測・収集のために，コー
+ドをクラスファイルに埋め込みます．例として，以下のHelloWorldで説明しま
+す．
 
 <code>
 public class HelloWorld{
@@ -75,19 +81,56 @@ public static void main(java.lang.String[]);
    30:	return
 </code>
 
-プログラムが終了するときに，今まで集計した結果を出力します．
+プログラムが終了するときに，今まで集計した結果を出力します．上記の例で
+あれば，以下のような出力になります．
+
+<code>
+Hello World
+############### execution trace (opcode,name) ###############
+178,getstatic
+18,ldc
+182,invokevirtual
+177,return
+############### frequency of trace (opcode,name,freq) ###############
+18,ldc,1
+177,return,1
+178,getstatic,1
+182,invokevirtual,1
+</code>
 
 * 使い方
 
-  Java Agentとして起動します．また，必要なところにクラスパスを通してお
-かなくてはいけません．具体的には以下のようなコマンドで実行します．以下
-は複数業に分けて書いていますが，実際は１行で書いてください．配布ファイ
-ルのトップディレクトリで実行します(src, target, pom.xml, READMEの4つの
-ファイル，ディレクトリが存在するディレクトリ)．
+** 変換のみを行う場合
 
-$ java -javaagent target/entropy-1.0-SNAPSHOT.jar 
-       -classpath 'target/entropy-1.0-SNAPSHOT.jar:XXXXX'
-       YYYYY
+  通常はこちらの起動方法で起動します．以下のように，javaコマンドの-jar
+オプションに渡せば実行できます．
+
+> $ java -jar entropy-1.0-SNAPSHOT.jar [OPTIONS] <TARGETS...>
+> 
+> OPTIONS
+>   -d, --dest <dest>: set output destination. Default is current directory.
+>   -h, --help:        show this message
+> 
+> TARGETS
+>   only accept Java class files.
+
+-d は変換後のクラスファイルの出力先を表します．デフォルトはカレントディ
+レクトリです．変換後のプログラムは，このjarファイル
+(entropy-1.0-SNAPSHOT.jar)にもクラスパスを通さなければ，実行できなくな
+ります．
+
+
+** Java Agentとして起動
+
+  必要なところにクラスパスを通しておかなくてはいけません．具体的には以
+下のようなコマンドで実行します．以下は複数業に分けて書いていますが，実
+際は１行で書いてください．配布ファイルのトップディレクトリで実行します
+(src, target, pom.xml, READMEの4つのファイル，ディレクトリが存在するディ
+レクトリ)．
+
+> $ java -javaagent target/entropy-1.0-SNAPSHOT.jar 
+>        -classpath 'target/entropy-1.0-SNAPSHOT.jar:XXXXX'
+>        YYYYY
 
 ここで，YYYYYは計測対象となるクラスファイルの指定，XXXXXはYYYYYが存在す
 るディレクトリもしくはjarファイルのパスです．計測しない場合は以下のよう

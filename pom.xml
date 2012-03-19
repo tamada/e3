@@ -53,6 +53,7 @@
         <configuration>
           <archive>
             <manifest>
+              <mainClass>entropy.Main</mainClass>
               <addClasspath>true</addClasspath>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>

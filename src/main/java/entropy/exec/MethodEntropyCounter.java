@@ -1,4 +1,4 @@
-package entropy;
+package entropy.exec;
 
 public class MethodEntropyCounter extends AbstractEntropyCounter{
     private String className;

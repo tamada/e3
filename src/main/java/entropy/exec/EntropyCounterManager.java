@@ -1,7 +1,6 @@
-package entropy;
+package entropy.exec;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -13,6 +12,11 @@ public class EntropyCounterManager{
     private List<EntropyCounter> executionList = new ArrayList<EntropyCounter>();
 
     private EntropyCounterManager(){
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            public void run(){
+                summarize();
+            }
+        });
     }
 
     public static EntropyCounterManager getInstance(){
@@ -27,16 +31,30 @@ public class EntropyCounterManager{
         // manager.exitMethod();
     }
 
+    /**
+     * 各メソッドごとに実行されるインストラクションを収集したいが，
+     * スタックの積み下ろしにバグがあるため，今のところ，未対応．
+     * 
+     * 将来的に実行されたメソッドごとに実行されたインストラクションを収集できるようにしたい．
+     * @param className
+     * @param methodName
+     */
+    @SuppressWarnings("unused")
     private void enterMethod(String className, String methodName){
         MethodEntropyCounter method = new MethodEntropyCounter(className, methodName);
-        System.out.printf("enterMethod(%s, %s)%n", className, methodName);
         stack.add(method);
         executionList.add(method);
         currentMethod = method;
     }
 
+    /**
+     * 各メソッドごとに実行されるインストラクションを収集したいが，
+     * スタックの積み下ろしにバグがあるため，今のところ，未対応．
+     * 
+     * 将来的に実行されたメソッドごとに実行されたインストラクションを収集できるようにしたい．
+     */
+    @SuppressWarnings("unused")
     private void exitMethod(){
-        System.out.println("exitMethod: " + stack.size());
         stack.remove(stack.size() - 1);
         if(stack.size() > 0){
             currentMethod = stack.get(stack.size() - 1);
@@ -49,21 +67,19 @@ public class EntropyCounterManager{
     public void summarize(){
         Map<Integer, Integer> opcodeCounter = new TreeMap<Integer, Integer>();
 
-        // for(EntropyCounter counter: executionList){
-            System.out.println("############### execution trace (opcode,name) ###############");
-            for(Integer opcode: currentMethod){
-                System.out.print(OpcodeManager.getInstance().getName(opcode));
-                System.out.printf(",%d%n", opcode);
-                Integer count = opcodeCounter.get(opcode);
-                if(count == null){
-                    count = new Integer(1);
-                }
-                else{
-                    count = new Integer(count.intValue() + 1);
-                }
-                opcodeCounter.put(opcode, count);
+        System.out.println("############### execution trace (opcode,name) ###############");
+        for(Integer opcode: currentMethod){
+            System.out.print(opcode);
+            System.out.println("," + OpcodeManager.getInstance().getName(opcode));
+            Integer count = opcodeCounter.get(opcode);
+            if(count == null){
+                count = new Integer(1);
             }
-        // }
+            else{
+                count = new Integer(count.intValue() + 1);
+            }
+            opcodeCounter.put(opcode, count);
+        }
 
         System.out.println("############### frequency of trace (opcode,name,freq) ###############");
         for(Map.Entry<Integer, Integer> entry: opcodeCounter.entrySet()){

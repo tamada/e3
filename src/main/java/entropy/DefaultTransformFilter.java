@@ -1,6 +1,7 @@
 package entropy;
 
-public class DefaultTransformFilter{
+public class DefaultTransformFilter implements TransformFilter{
+    @Override
     public boolean filter(String className){
         if(className.startsWith("java/") || className.startsWith("javax/") ||
            className.startsWith("org/objectweb/") || className.startsWith("org/apache/") ||
