@@ -64,7 +64,7 @@ public class EntropyCounterManager{
         }
     }
 
-    public void summarize(){
+    public synchronized void summarize(){
         Map<Integer, Integer> opcodeCounter = new TreeMap<Integer, Integer>();
 
         OpcodeManager manager = OpcodeManager.getInstance();
