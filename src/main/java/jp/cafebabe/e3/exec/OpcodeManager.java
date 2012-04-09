@@ -15,6 +15,10 @@ public class OpcodeManager{
         this.opcodes = opcodes;
     }
 
+    public int getSize(){
+        return opcodes.size();
+    }
+
     public String getMethodName(String opcodeName){
         Opcode opcode = opcodes.get(opcodeName);
         String name = null;
