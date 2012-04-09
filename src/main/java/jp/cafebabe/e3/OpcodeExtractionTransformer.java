@@ -1,4 +1,4 @@
-package entropy;
+package jp.cafebabe.e3;
 
 import java.io.File;
 import java.io.FileOutputStream;

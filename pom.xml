@@ -2,12 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>entropy</groupId>
-  <artifactId>entropy</artifactId>
+  <groupId>jp.cafebabe</groupId>
+  <artifactId>e3</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>Entropy Counter</name>
-  <url>http://maven.apache.org</url>
+  <name>e3: Entropy Extracting Executor</name>
+  <url>http://cafebabe.jp/e3/</url>
 
   <dependencies>
     <dependency>
@@ -53,12 +53,12 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>entropy.Main</mainClass>
+              <mainClass>jp.cafebabe.e3.Main</mainClass>
               <addClasspath>true</addClasspath>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
             <manifestEntries>
-              <Premain-Class>entropy.Premain</Premain-Class>
+              <Premain-Class>jp.cafebabe.e3.Premain</Premain-Class>
               <Can-Redefine-Classes>true</Can-Redefine-Classes>
             </manifestEntries>
           </archive>

@@ -1,4 +1,4 @@
-package entropy.exec;
+package jp.cafebabe.e3.exec;
 
 public class Opcode{
     private int opcode;

@@ -1,4 +1,4 @@
-package entropy;
+package jp.cafebabe.e3;
 
 import java.lang.instrument.Instrumentation;
 

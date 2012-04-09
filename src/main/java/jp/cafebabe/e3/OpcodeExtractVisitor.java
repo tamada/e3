@@ -1,11 +1,11 @@
-package entropy;
+package jp.cafebabe.e3;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import entropy.exec.OpcodeManager;
+import jp.cafebabe.e3.exec.OpcodeManager;
 
 public class OpcodeExtractVisitor extends ClassVisitor{
     private String className;
@@ -49,7 +49,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
             super.visitLdcInsn(className);
             super.visitLdcInsn(methodName);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 "entryMethod", "(Ljava/lang/String;Ljava/lang/String;)V"
             );
         }
@@ -60,13 +60,13 @@ public class OpcodeExtractVisitor extends ClassVisitor{
                opcode == Opcodes.LRETURN || opcode == Opcodes.FRETURN ||
                opcode == Opcodes.DRETURN || opcode == Opcodes.ARETURN){
                 super.visitMethodInsn(
-                    Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                    Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                     "returnMethod", "()V"
                 );
             }
             String methodName = OpcodeManager.getInstance().getMethodName(opcode);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
 
@@ -77,7 +77,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
         public void visitIntInsn(int opcode, int value){
             String methodName = OpcodeManager.getInstance().getMethodName(opcode);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
             super.visitIntInsn(opcode, value);
@@ -87,7 +87,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
         public void visitTypeInsn(int opcode, String value){
             String methodName = OpcodeManager.getInstance().getMethodName(opcode);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
             super.visitTypeInsn(opcode, value);
@@ -97,7 +97,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
         public void visitVarInsn(int opcode, int value){
             String methodName = OpcodeManager.getInstance().getMethodName(opcode);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
             super.visitVarInsn(opcode, value);
@@ -107,7 +107,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
         public void visitFieldInsn(int opcode, String owner, String name, String desc){
             String methodName = OpcodeManager.getInstance().getMethodName(opcode);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
             super.visitFieldInsn(opcode, owner, name, desc);
@@ -117,7 +117,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
         public void visitMethodInsn(int opcode, String owner, String name, String desc){
             String methodName = OpcodeManager.getInstance().getMethodName(opcode);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
             super.visitMethodInsn(opcode, owner, name, desc);
@@ -127,7 +127,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
         public void visitJumpInsn(int opcode, Label target){
             String methodName = OpcodeManager.getInstance().getMethodName(opcode);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
             super.visitJumpInsn(opcode, target);
@@ -137,7 +137,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
         public void visitLdcInsn(Object value){
             String methodName = OpcodeManager.getInstance().getMethodName(Opcodes.LDC);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
             super.visitLdcInsn(value);
@@ -147,7 +147,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
         public void visitIincInsn(int opcode, int increment){
             String methodName = OpcodeManager.getInstance().getMethodName(opcode);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
             super.visitIincInsn(opcode, increment);
@@ -157,7 +157,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
         public void visitTableSwitchInsn(int from, int to, Label defaultLabel, Label... targets){
             String methodName = OpcodeManager.getInstance().getMethodName(Opcodes.TABLESWITCH);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
             super.visitTableSwitchInsn(from, to, defaultLabel, targets);
@@ -167,7 +167,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
         public void visitLookupSwitchInsn(Label defaultLabel, int[] values, Label[] targets){
             String methodName = OpcodeManager.getInstance().getMethodName(Opcodes.LOOKUPSWITCH);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
             super.visitLookupSwitchInsn(defaultLabel, values, targets);
@@ -177,7 +177,7 @@ public class OpcodeExtractVisitor extends ClassVisitor{
         public void visitMultiANewArrayInsn(String desc, int dim){
             String methodName = OpcodeManager.getInstance().getMethodName(Opcodes.MULTIANEWARRAY);
             super.visitMethodInsn(
-                Opcodes.INVOKESTATIC, "entropy/exec/EntropyCounterManager",
+                Opcodes.INVOKESTATIC, "jp/cafebabe/e3/exec/EntropyCounterManager",
                 methodName, "()V"
             );
             super.visitMultiANewArrayInsn(desc, dim);
