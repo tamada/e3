@@ -69,7 +69,7 @@ public class EntropyCounterManager{
 
         OpcodeManager manager = OpcodeManager.getInstance();
 
-        System.out.println("####### execution trace (opcode,name) ########");
+        System.out.println("######### execution trace (opcode,name) ##########");
         for(Integer opcode: currentMethod){
             System.out.print(opcode);
             System.out.println("," + manager.getName(opcode));
@@ -89,7 +89,7 @@ public class EntropyCounterManager{
         double entropy2 = 0d;
         double log2 = Math.log(2);
 
-        System.out.println("### frequency of trace (opcode,name,count) ###");
+        System.out.println("##### frequency of trace (opcode,name,count) #####");
         for(Map.Entry<Integer, Integer> entry: opcodeCounter.entrySet()){
             String name = manager.getName(entry.getKey());
             int opcode = entry.getKey();
@@ -103,7 +103,7 @@ public class EntropyCounterManager{
             entropy2 += -1 * probability2 * (Math.log(probability2) / log2);
         }
 
-        System.out.println("################## entropy ###################");
+        System.out.println("#################### entropy #####################");
         System.out.println(entropy);
         System.out.println(entropy2);
         

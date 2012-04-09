@@ -1,5 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="utf-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>jp.cafebabe</groupId>
@@ -8,6 +11,44 @@
   <packaging>jar</packaging>
   <name>e3: Entropy Extracting Executor</name>
   <url>http://cafebabe.jp/e3/</url>
+  <inceptionYear>2011</inceptionYear>
+  <description>
+      e3 project aims to extract and calculate entropy of target Java
+      programs.  Entropy of program represents biases of instructions.
+      If a program has non-biased instructions, the program become
+      harder to understand.
+
+      Currently, this project can calculate entropy from dynamic
+      execution trace and extract dynamic execution trace of
+      instructions.
+  </description>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <repositories>
+    <repository>
+      <id>rydeen.sourceforge.net</id>
+      <name>The Maven2 Repository of Rydeen (sourceforge.net)</name>
+      <url>http://rydeen.sourceforge.net/maven2</url>
+    </repository>
+  </repositories>
+
+  <developers>
+    <developer>
+      <id>tama</id>
+      <name>Haruaki TAMADA</name>
+      <email>tamada cse.kyoto-su.ac.jp</email>
+      <organization>Kyogo Sangyo University</organization>
+      <organizationUrl>http://info.cse.kyoto-su.ac.jp/</organizationUrl>
+      <timezone>-9</timezone>
+    </developer>
+  </developers>
 
   <dependencies>
     <dependency>
@@ -81,6 +122,51 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <inputEncoding>utf-8</inputEncoding>
+          <outputEncoding>utf-8</outputEncoding>
+          <locales>ja</locales>
+          <reportPlugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-project-info-reports-plugin</artifactId>
+              <version>2.4</version>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>2.7</version>
+              <configuration>
+                <charset>utf-8</charset>
+                <encoding>utf-8</encoding>
+              </configuration>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jxr-plugin</artifactId>
+              <version>2.1</version>
+              <configuration>
+                <aggregate>true</aggregate>
+              </configuration>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-report-plugin</artifactId>
+              <version>2.6</version>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-checkstyle-plugin</artifactId>
+              <version>2.6</version>
+            </plugin>            
+          </reportPlugins>
+        </configuration>
       </plugin>
     </plugins>
   </build>

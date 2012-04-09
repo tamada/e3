@@ -1,0 +1,155 @@
+ ----
+ e3: Entropy Extracting Executor
+ ----
+ Haruaki Tamada
+ ----
+ 2012-04-08
+ ----
+
+{Overview}
+
+ e3は実行時にどの命令が何度くらい実行されるのか，また，それらの命令がど
+のような順番で実行されるのかを計測するためのツールです．
+
+ このツールは難読化手法などの評価に使われます．もし，プログラムのエント
+ロピーが最大ならば，全ての命令が万遍なく出現していることになります．計
+測対象プログラムがどのくらいのエントロピーであるのかを計測するのがこの
+ツールの目的です．
+
+{Measurement}
+
+ このツールは，2種類の実行方法があります．1つ目は，計測するためのコード
+を埋め込む変換を静的に行う方法です．もう1つはプログラムロード時に，クラ
+スファイルを書き換え，そのまま実行する方法です．両方とも，プログラム終
+了時に計測結果を標準出力にCSV形式で出力します．出力内容はインストラクショ
+ンの実行トレースと，その頻度，そして，エントロピーの計算結果です．
+
+ 本ツールでは，実行されたインストラクションの計測・収集のために，コード
+をクラスファイルに埋め込みます．例として，以下のHelloWorldで説明します．
+
+----
+public class HelloWorld{
+    public static void main(String[] args){
+        System.out.println("Hello World");
+    }
+}
+----
+
+ このプログラムをコンパイルすると，以下のようなバイトコードに変換されま
+す．コンスタントプールは省略しています．
+
+----
+public HelloWorld()
+  Code:
+   0:   aload_0
+   1:   invokespecial   #1; //Method java/lang/Object."<init>":()V
+   4:   return
+
+public static void main(java.lang.String[]);
+  Code:
+   0:   getstatic       #2; //Field java/lang/System.out:Ljava/io/PrintStream;
+   3:   ldc     #3; //String Hello World
+   5:   invokevirtual   #4; //Method java/io/PrintStream.println:(Ljava/lang/String;)V
+   8:   return
+----
+
+ このツールは上記バイトコードの命令1つずつ集計のためのメソッド呼び出し
+を加えていきます．
+
+----
+public HelloWorld()
+  Code:
+   0:   ldc     #7; //String HelloWorld
+   2:   ldc     #8; //String <init>
+   4:   invokestatic    #14; //Method jp/cafebabe/e3/EntropyCounterManager.entryMethod:(Ljava/lang/String;Ljava/lang/String;)V
+   7:   invokestatic    #17; //Method jp/cafebabe/e3/EntropyCounterManager.aload:()V
+   10:  aload_0
+   11:  invokestatic    #20; //Method jp/cafebabe/e3/EntropyCounterManager.invokespecial:()V
+   14:  invokespecial   #22; //Method java/lang/Object."<init>":()V
+   17:  invokestatic    #25; //Method jp/cafebabe/e3/EntropyCounterManager.returnMethod:()V
+   20:  invokestatic    #28; //Method jp/cafebabe/e3/EntropyCounterManager.returnInsn:()V
+   23:  return
+
+public static void main(java.lang.String[]);
+  Code:
+   0:   ldc     #7; //String HelloWorld
+   2:   ldc     #31; //String main
+   4:   invokestatic    #14; //Method jp/cafebabe/e3/EntropyCounterManager.entryMethod:(Ljava/lang/String;Ljava/lang/String;)V
+   7:   invokestatic    #34; //Method jp/cafebabe/e3/EntropyCounterManager.getstatic:()V
+   10:  getstatic       #40; //Field java/lang/System.out:Ljava/io/PrintStream;
+   13:  invokestatic    #43; //Method jp/cafebabe/e3/EntropyCounterManager.ldc:()V
+   16:  ldc     #45; //String Hello World
+   18:  invokestatic    #48; //Method jp/cafebabe/e3/EntropyCounterManager.invokevirtual:()V
+   21:  invokevirtual   #54; //Method java/io/PrintStream.println:(Ljava/lang/String;)V
+   24:  invokestatic    #25; //Method jp/cafebabe/e3/EntropyCounterManager.returnMethod:()V
+   27:  invokestatic    #28; //Method jp/cafebabe/e3/EntropyCounterManager.returnInsn:()V
+   30:  return
+----
+
+ プログラムが終了するときに，今まで集計した結果を出力します．上記の例で
+あれば，以下のような出力になります．
+
+----
+Hello World
+######### execution trace (opcode,name) ##########
+178,getstatic
+18,ldc
+182,invokevirtual
+177,return
+##### frequency of trace (opcode,name,count) #####
+18,ldc,1
+177,return,1
+178,getstatic,1
+182,invokevirtual,1
+#################### entropy #####################
+2.0
+0.13741912305552179
+----
+
+ 出力は大きく4つの区画に分けられ，それぞれ#で囲まれたラベルで区切られて
+います．一番最初の区画は，そのプログラムの出力です．e3で変換しなかった
+場合に出力される内容と同じものです．
+
+ 次の区画は，実行トレースが出力されます．この出力は実行されたopcode が
+実行された順序で１行ずつ出力されます．出力内容は，opcode とそれに対応す
+る名前が１行に表示されています．
+
+ 3つ目の区画は実行頻度が出力されます．opcode の番号順に opcode，それに
+対応する名前，実行された頻度が１行で出力されます．ここに出力される行数
+が，当該プログラムで使用されている命令一覧になります．
+
+ 最後の区画は以下の式で表される平均情報量が計算されて出力されます．2つ
+出力されていますが，1行目はその実行において使われた命令でエントロピーを
+計算しています．2行目は，Javaプログラムの全ての命令におけるエントロピー
+を計算しています．この違いは，以下の式のpiの求め方にあります．全体の命
+令をどのように求めるかが異なっています．
+
+[images/entropy.png]
+
+{Requirements}
+
+ このツールは以下のライブラリを使用しています．
+
+ * ASM 4.0 (バイトコードの書換に用いています)
+   http://asm.ow2.org/
+
+{Install}
+
+ 以下のコマンドを実行すると，必要なファイルをインターネットからダウンロー
+ド，ソースコードのコンパイル，クラスファイルのパッケージングを行います．
+ただし，Maven 3を予めインストールしておかなくてはなりません．また，
+Maven 3の初回実行時は時間がかかります．
+
+--------
+$ mvn package
+--------
+
+{Contact}
+
+ 〒603-8555 京都市北区上賀茂本山
+
+ 京都産業大学 コンピュータ理工学部
+
+ 玉田 春昭
+
+[images/mailaddress.png]

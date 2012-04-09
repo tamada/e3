@@ -1,0 +1,33 @@
+ ----
+ e3: Information
+ ----
+ Haruaki Tamada
+ ----
+ 2012-04-09
+ ----
+
+{Version History}
+
+* version 1.0
+
+ * initial version.
+
+{Roadmap}
+
+* version 1.1
+
+ * Introduce configuration file for selecting transformation targets.
+
+ * Selecting output transformed programs on runtime of dynamically transformation.
+
+* version 2.0
+
+ Adding following features.
+
+ * GUI interface for execution/conversion Java programs.
+
+ * Apply jar files as input.
+
+{Means of project name}
+
+ e3 is ``Entropy Extraction Executor.''

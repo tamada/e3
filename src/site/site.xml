@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="${project.name}">
+  <bannerLeft>
+    <name>${project.name}</name>
+    <src>./images/e3logo.png</src>
+    <alt>e3: Entropy Extracting Executor</alt>
+  </bannerLeft>
+
+  <publishDate position="right"/>
+  <version position="right"/>
+
+  <poweredBy>
+    <logo name="Powered by ASM"     href="http://asm.objectweb.org/" img="./images/poweredbyasm.gif" />
+    <logo name="Build with Maven 2" href="http://maven.apache.org"   img="./images/maven-feather.png" />
+  </poweredBy>
+
+  <skin>
+    <groupId>net.sf.rydeen</groupId>
+    <artifactId>default-skin</artifactId>
+    <version>1.0</version>
+  </skin>
+
+  <body>
+    <menu name="e3" inherit="top">
+      <item name="Introduction"  href="/index.html">
+        <description>
+          Summary of this project.
+        </description>
+      </item>
+      <item name="Information"   href="/info.html">
+        <description>
+          Version history.
+        </description>
+      </item>
+      <item name="Usage"         href="/usage.html" />
+    </menu>
+    <menu ref="reports" />
+  </body>
+</project>
