@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.ServiceLoader;
 
 public class EntropyCounterManager{
     private static final EntropyCounterManager manager = new EntropyCounterManager();
@@ -65,11 +66,18 @@ public class EntropyCounterManager{
     }
 
     public synchronized void summarize(){
-        Map<Integer, Integer> opcodeCounter = new TreeMap<Integer, Integer>();
-
         OpcodeManager manager = OpcodeManager.getInstance();
+        byte[] sequence = new byte[currentMethod.getSize()];
 
-        System.out.println("######### execution trace (opcode,name) ##########");
+        Map<Integer, Integer> opcodeCounter = printExecutionTrace(manager, sequence);
+        printEntropy(manager, opcodeCounter);
+        calculateKolmogorov(sequence);
+    }
+
+    private Map<Integer, Integer> printExecutionTrace(OpcodeManager manager, byte[] sequence){
+        Map<Integer, Integer> opcodeCounter = new TreeMap<Integer, Integer>();
+        int index = 0;
+        System.out.println("############# execution trace (opcode,name) ###############");
         for(Integer opcode: currentMethod){
             System.out.print(opcode);
             System.out.println("," + manager.getName(opcode));
@@ -81,15 +89,21 @@ public class EntropyCounterManager{
                 count = new Integer(count.intValue() + 1);
             }
             opcodeCounter.put(opcode, count);
-        }
 
+            sequence[index] = (byte)(opcode & 0xff);
+            index++;
+        }
+        return opcodeCounter;
+    }
+
+    private void printEntropy(OpcodeManager manager, Map<Integer, Integer> opcodeCounter){
         // 出現した命令を基にエントロピーを計算する．
         double entropy = 0d;
         // JVMに定義されている全ての命令を基にエントロピーを計算する．
         double entropy2 = 0d;
         double log2 = Math.log(2);
 
-        System.out.println("##### frequency of trace (opcode,name,count) #####");
+        System.out.println("######### frequency of trace (opcode,name,count) ##########");
         for(Map.Entry<Integer, Integer> entry: opcodeCounter.entrySet()){
             String name = manager.getName(entry.getKey());
             int opcode = entry.getKey();
@@ -103,10 +117,19 @@ public class EntropyCounterManager{
             entropy2 += -1 * probability2 * (Math.log(probability2) / log2);
         }
 
-        System.out.println("#################### entropy #####################");
+        System.out.println("######################### entropy #########################");
         System.out.println(entropy);
         System.out.println(entropy2);
-        
+    }
+
+    private void calculateKolmogorov(byte[] sequence){
+        System.out.println("#### kolmogorov distance (algorithm,after,before,rate) ####");
+        ServiceLoader<KolmogorovCalculator> loader =
+            ServiceLoader.load(KolmogorovCalculator.class);
+
+        for(KolmogorovCalculator calculator: loader){
+            System.out.println(calculator.getSummary(sequence));
+        }
     }
 
     private static EntropyCounter getCounter(){

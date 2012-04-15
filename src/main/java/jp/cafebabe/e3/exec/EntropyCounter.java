@@ -8,6 +8,8 @@ public interface EntropyCounter extends Iterable<Integer>{
      */
     public Iterator<Integer> iterator();
 
+    public int getSize();
+
     public void summarize();
 
     public void aaload();

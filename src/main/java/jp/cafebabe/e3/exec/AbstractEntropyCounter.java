@@ -17,6 +17,10 @@ public class AbstractEntropyCounter implements EntropyCounter{
         return opcodes.iterator();
     }
 
+    public final int getSize(){
+        return opcodes.size();
+    }
+
     @Override
     public void summarize(){
         Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
