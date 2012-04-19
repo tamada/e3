@@ -8,6 +8,10 @@ public class EmptyMethodEntropyCounter implements EntropyCounter{
         return new ArrayList<Integer>().iterator();
     }
 
+    public int getSize(){
+        return 0;
+    }
+
     public void summarize(){ }
 
     public void aaload(){ }
