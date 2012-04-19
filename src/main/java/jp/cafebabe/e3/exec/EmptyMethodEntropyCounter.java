@@ -3,7 +3,7 @@ package jp.cafebabe.e3.exec;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class EmptyMethodEntropyCounter implements EntropyCounter{
+public final class EmptyMethodEntropyCounter implements EntropyCounter{
     public Iterator<Integer> iterator(){
         return new ArrayList<Integer>().iterator();
     }
@@ -314,7 +314,7 @@ public class EmptyMethodEntropyCounter implements EntropyCounter{
 
     public void multianewarray(){ }
 
-    public void newMethod(){ }
+    public void newInsn(){ }
 
     public void newarray(){ }
 

@@ -7,11 +7,17 @@ import java.net.URL;
 import java.util.Map;
 import java.util.HashMap;
 
-public class OpcodeManager{
-    private static final OpcodeManager instance;
-    private Map<String, Opcode> opcodes;
+/**
+ * This class manage the relationship of instruction and method which
+ * is called for executing corresponding instruction.
+ * This class read definition of relationships.
+ * @author Haruaki Tamada
+ */
+public final class OpcodeManager{
+    private static final OpcodeManager INSTANCE;
+    private final Map<String, Opcode> opcodes;
 
-    private OpcodeManager(Map<String, Opcode> opcodes){
+    private OpcodeManager(final Map<String, Opcode> opcodes){
         this.opcodes = opcodes;
     }
 
@@ -19,7 +25,7 @@ public class OpcodeManager{
         return opcodes.size();
     }
 
-    public String getMethodName(String opcodeName){
+    public String getMethodName(final String opcodeName){
         Opcode opcode = opcodes.get(opcodeName);
         String name = null;
         if(opcode != null){
@@ -28,7 +34,7 @@ public class OpcodeManager{
         return name;
     }
 
-    public String getMethodName(int opcode){
+    public String getMethodName(final int opcode){
         for(Opcode code: opcodes.values()){
             if(code.getOpcode() == opcode){
                 return code.getMethodName();
@@ -37,7 +43,7 @@ public class OpcodeManager{
         return null;
     }
 
-    public String getName(int opcode){
+    public String getName(final int opcode){
         for(Opcode code: opcodes.values()){
             if(code.getOpcode() == opcode){
                 return code.getName();
@@ -46,7 +52,7 @@ public class OpcodeManager{
         return null;
     }
 
-    public int getOpcode(String opcodeName){
+    public int getOpcode(final String opcodeName){
         Opcode opcode = opcodes.get(opcodeName);
         int id = -1;
         if(opcode != null){
@@ -55,30 +61,40 @@ public class OpcodeManager{
         return id;
     }
 
-    public static final OpcodeManager getInstance(){
-        return instance;
+    public static OpcodeManager getInstance(){
+        return INSTANCE;
     }
 
     static{
         BufferedReader in = null;
         try{
-            URL url = OpcodeManager.class.getResource("/resources/bytecode.def");
+            URL url = OpcodeManager.class.getResource(
+                "/resources/bytecode.def"
+            );
             String line;
             Map<String, Opcode> opcodeMap = new HashMap<String, Opcode>();
 
-            in = new BufferedReader(new InputStreamReader(url.openStream()));
+            in = new BufferedReader(
+                new InputStreamReader(url.openStream(), "utf-8")
+            );
             while((line = in.readLine()) != null){
                 String[] data = line.split(",");
-                opcodeMap.put(data[1], new Opcode(Integer.parseInt(data[0]), data[1], data[2]));
+                opcodeMap.put(
+                    data[1],
+                    new Opcode(Integer.parseInt(data[0]), data[1], data[2])
+                );
             }
-            instance = new OpcodeManager(opcodeMap);
-        } catch(IOException e){
+            INSTANCE = new OpcodeManager(opcodeMap);
+        }
+        catch(IOException e){
             throw new InternalError(e.getMessage());
-        } finally{
+        }
+        finally{
             if(in != null){
                 try{
                     in.close();
-                } catch(IOException e){
+                }
+                catch(IOException e){
                     throw new InternalError(e.getMessage());
                 }
             }

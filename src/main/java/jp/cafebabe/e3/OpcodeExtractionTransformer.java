@@ -9,16 +9,17 @@ import java.security.ProtectionDomain;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
-public class OpcodeExtractionTransformer implements ClassFileTransformer{
-    private String className;
+public final class OpcodeExtractionTransformer implements ClassFileTransformer{
+    private String currentClassName;
 
     @Override
-    public byte[] transform(ClassLoader loader, String className, Class<?> type,
-                            ProtectionDomain domain, byte[] originalData){
-        DefaultTransformFilter filter = new DefaultTransformFilter();
+    public byte[] transform(final ClassLoader loader, final String className,
+                            final Class<?> type, final ProtectionDomain domain,
+                            final byte[] originalData){
+        TransformFilter filter = new DefaultTransformFilter();
 
         boolean flag = filter.filter(className);
-        this.className = className;
+        this.currentClassName = className;
         if(flag){
             ClassReader reader = new ClassReader(originalData);
             ClassWriter writer = new ClassWriter(
@@ -34,7 +35,7 @@ public class OpcodeExtractionTransformer implements ClassFileTransformer{
         return null;
     }
 
-    public byte[] transform(byte[] originalData){
+    public byte[] transform(final byte[] originalData){
         ClassReader reader = new ClassReader(originalData);
         ClassWriter writer = new ClassWriter(
             ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS
@@ -42,24 +43,25 @@ public class OpcodeExtractionTransformer implements ClassFileTransformer{
         OpcodeExtractVisitor visitor = new OpcodeExtractVisitor(writer);
         reader.accept(visitor, ClassReader.SKIP_DEBUG);
 
-        this.className = visitor.getClassName();
+        this.currentClassName = visitor.getClassName();
 
         return writer.toByteArray();
     }
 
     public String getClassName(){
-        return className;
+        return currentClassName;
     }
 
-    public void output(String dest, byte[] data){
+    public void output(final String dest, final byte[] data){
         try{
-            File file = new File(dest, className + ".class");
+            File file = new File(dest, currentClassName + ".class");
             file.getParentFile().mkdirs();
             FileOutputStream out = new FileOutputStream(file);
             out.write(data);
             out.close();
-        } catch(IOException e){
-            e.printStackTrace();
+        }
+        catch(IOException e){
+            throw new InternalError(e.getMessage());
         }
     }
 }

@@ -164,6 +164,18 @@
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-checkstyle-plugin</artifactId>
               <version>2.6</version>
+              <configuration>
+                <configLocation>src/config/checkstyle-checker.xml</configLocation>
+                <encoding>utf-8</encoding>
+              </configuration>
+            </plugin>            
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>findbugs-maven-plugin</artifactId>
+              <version>2.4.0</version>
+              <configuration>
+                <sourceEncoding>utf-8</sourceEncoding>
+              </configuration>
             </plugin>            
           </reportPlugins>
         </configuration>

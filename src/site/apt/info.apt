@@ -18,15 +18,17 @@
 
  * Introduce configuration file for selecting transformation targets.
 
- * Selecting output transformed programs on runtime of dynamically transformation.
+ * Enable to select writing transformed programs or not on dynamically transformation.
+
+ * Introduce statically entropy analysis.
+
+ * Apply jar files as input.
 
 * version 2.0
 
  Adding following features.
 
  * GUI interface for execution/conversion Java programs.
-
- * Apply jar files as input.
 
 {Means of project name}
 

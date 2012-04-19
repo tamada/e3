@@ -185,7 +185,7 @@
 184,invokestatic,invokestatic
 185,invokeinterface,invokeinterface
 186,__unused,noMethod
-187,new,newMethod
+187,new,newInsn
 188,newarray,newarray
 189,anewarray,anewarray
 190,arraylength,arraylength
@@ -219,7 +219,7 @@
 218,invokeinterface_quick,invokeinterface
 219,invokevirtualobject_quick,invokevirtualobject
 220,__unused,noMethod
-221,new_quick,newMethod
+221,new_quick,newInsn
 222,anewarray_quick,anewarray
 223,multianewarray_quick,multianewarray
 224,checkcast_quick,checkcast

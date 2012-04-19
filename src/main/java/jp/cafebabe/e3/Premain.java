@@ -2,12 +2,13 @@ package jp.cafebabe.e3;
 
 import java.lang.instrument.Instrumentation;
 
-public class Premain{
-    public Premain(String agentArgs, Instrumentation inst){
+public final class Premain{
+    Premain(final String agentArgs, final Instrumentation inst){
         inst.addTransformer(new OpcodeExtractionTransformer());
     }
 
-    public static void premain(String agentArgs, Instrumentation inst){
+    public static void premain(final String agentArgs,
+                               final Instrumentation inst){
         new Premain(agentArgs, inst);
     }
 }

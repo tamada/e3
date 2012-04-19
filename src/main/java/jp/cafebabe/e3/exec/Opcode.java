@@ -1,11 +1,15 @@
 package jp.cafebabe.e3.exec;
 
-public class Opcode{
+/**
+ *
+ * @author Haruaki Tamada
+ */
+public final class Opcode{
     private int opcode;
     private String methodName;
     private String name;
 
-    public Opcode(int opcode, String name, String methodName){
+    public Opcode(final int opcode, final String name, final String methodName){
         this.opcode = opcode;
         this.name = name;
         this.methodName = methodName;
