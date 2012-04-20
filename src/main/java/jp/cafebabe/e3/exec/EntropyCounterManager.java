@@ -99,7 +99,7 @@ public final class EntropyCounterManager{
         Map<Integer, Integer> opcodeCounter = new TreeMap<Integer, Integer>();
         int index = 0;
         System.out.println(
-            "############# execution trace (opcode,name) ###############"
+            "#################### execution trace (opcode,name) ######################"
         );
 
         for(Integer opcode: currentMethod){
@@ -129,7 +129,7 @@ public final class EntropyCounterManager{
         double log2 = Math.log(2);
 
         System.out.println(
-            "######### frequency of trace (opcode,name,count) ##########"
+            "################ frequency of trace (opcode,name,count) #################"
         );
         for(Map.Entry<Integer, Integer> entry: opcodeCounter.entrySet()){
             String name = manager.getName(entry.getKey());
@@ -145,7 +145,7 @@ public final class EntropyCounterManager{
         }
 
         System.out.println(
-            "######################### entropy #########################"
+            "################################ entropy ################################"
         );
         System.out.println(entropy);
         System.out.println(entropy2);
@@ -153,7 +153,7 @@ public final class EntropyCounterManager{
 
     private void calculateKolmogorov(byte[] sequence){
         System.out.println(
-            "#### kolmogorov distance (algorithm,after,before,rate) ####"
+            "########## kolmogorov complexity (algorithm,after,before,rate) ##########"
         );
         ServiceLoader<KolmogorovCalculator> loader =
             ServiceLoader.load(KolmogorovCalculator.class);
