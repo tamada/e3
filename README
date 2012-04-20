@@ -86,16 +86,21 @@ public static void main(java.lang.String[]);
 
 <code>
 Hello World
-############### execution trace (opcode,name) ###############
+#################### execution trace (opcode,name) ######################
 178,getstatic
 18,ldc
 182,invokevirtual
 177,return
-############### frequency of trace (opcode,name,freq) ###############
+################ frequency of trace (opcode,name,count) #################
 18,ldc,1
 177,return,1
 178,getstatic,1
 182,invokevirtual,1
+################################ entropy ################################
+2.0
+0.13741912305552179
+########## kolmogorov complexity (algorithm,after,before,rate) ##########
+deflate,12,4,3.000000
 </code>
 
 * 使い方
@@ -105,7 +110,7 @@ Hello World
   通常はこちらの起動方法で起動します．以下のように，javaコマンドの-jar
 オプションに渡せば実行できます．
 
-> $ java -jar e3-1.0-SNAPSHOT.jar [OPTIONS] <TARGETS...>
+> $ java -jar e3-1.0.jar [OPTIONS] <TARGETS...>
 > 
 > OPTIONS
 >   -d, --dest <dest>: set output destination. Default is current directory.
@@ -116,7 +121,7 @@ Hello World
 
 -d は変換後のクラスファイルの出力先を表します．デフォルトはカレントディ
 レクトリです．変換後のプログラムは，このjarファイル
-(e3-1.0-SNAPSHOT.jar)にもクラスパスを通さなければ，実行できなくな
+(e3-1.0.jar)にもクラスパスを通さなければ，実行できなくな
 ります．
 
 
@@ -128,8 +133,8 @@ Hello World
 (src, target, pom.xml, READMEの4つのファイル，ディレクトリが存在するディ
 レクトリ)．
 
-> $ java -javaagent target/e3-1.0-SNAPSHOT.jar 
->        -classpath 'target/e3-1.0-SNAPSHOT.jar:XXXXX'
+> $ java -javaagent target/e3-1.0.jar 
+>        -classpath 'target/e3-1.0.jar:XXXXX'
 >        YYYYY
 
 ここで，YYYYYは計測対象となるクラスファイルの指定，XXXXXはYYYYYが存在す
@@ -157,7 +162,7 @@ $ java -classpath XXXXX YYYYY
  * asm 4.0 (バイトコードの書き換えに用いています)
 
 ツールのディレクトリで，mvn package と入力すれば，コンパイルされ，
-target ディレクトリに e3-1.0-SNAPSHOT.jar が作成されます．
+target ディレクトリに e3-1.0.jar が作成されます．
 
 * 連絡先
 

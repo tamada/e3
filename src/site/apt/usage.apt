@@ -14,10 +14,10 @@
 ください．配布ファイルのトップディレクトリで実行する場合のコマンドです
 (src, target, pom.xml, READMEの4つのファイル，ディレクトリが存在するディ
 レクトリ)．他のディレクトリで実行する場合は，
-target/e3-1.0-SNAPSHOT.jar を適切なパスに修正して実行して下さい．
+target/e3-1.0.jar を適切なパスに修正して実行して下さい．
 
 ----
-$ java -javaagent:target/e3-1.0-SNAPSHOT.jar 
+$ java -javaagent:target/e3-1.0.jar 
        -classpath XXXXX
        YYYYY
 ----
@@ -42,7 +42,7 @@ $ java -classpath XXXXX YYYYY
 れます．
 
 ----
-$ java -jar e3-1.0-SNAPSHOT.jar [OPTIONS] <TARGETS...>
+$ java -jar e3-1.0.jar [OPTIONS] <TARGETS...>
 
 OPTIONS
   -d, --dest <dest>: set output destination. Default is current directory.
@@ -52,10 +52,10 @@ TARGETS
   only accept Java class files.
 ----
 
- -d は変換後のクラスファイルの出力先を表します．指定しなかった場合はカレ
-ントディレクトリ（.）が指定されたことになります．変換後のプログラムを実
-行するには，このjarファイル(e3-1.0-SNAPSHOT.jar)にクラスパスを通さなく
-てはいけません．
+ -d は変換後のクラスファイルの出力先を表します．指定しなかった場合はカ
+レントディレクトリ（.）が指定されたことになります．変換後のプログラムを
+実行するには，このjarファイル(e3-1.0.jar)にクラスパスを通さなくてはいけ
+ません．
 
 {Transformation Targets}
 

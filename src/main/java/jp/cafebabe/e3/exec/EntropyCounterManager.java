@@ -1,6 +1,5 @@
 package jp.cafebabe.e3.exec;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import java.util.ServiceLoader;
  * @author Haruaki Tamada
  */
 public final class EntropyCounterManager{
+    private static final int BYTE = 0xff;
     private static final EntropyCounterManager MANAGER =
         new EntropyCounterManager();
     private EntropyCounter currentMethod = new MethodEntropyCounter("", "");
@@ -114,7 +114,7 @@ public final class EntropyCounterManager{
             }
             opcodeCounter.put(opcode, count);
 
-            sequence[index] = (byte)(opcode & 0xff);
+            sequence[index] = (byte)(opcode & BYTE);
             index++;
         }
         return opcodeCounter;

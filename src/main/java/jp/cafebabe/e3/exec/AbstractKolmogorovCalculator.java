@@ -18,4 +18,6 @@ public abstract class AbstractKolmogorovCalculator implements KolmogorovCalculat
     public abstract String getName();
 
     public abstract byte[] compress(byte[] data) throws IOException;
+
+    public abstract boolean isAvailable();
 }
