@@ -17,7 +17,18 @@ import org.objectweb.asm.ClassWriter;
  * @author Haruaki Tamada
  */
 public final class OpcodeExtractionTransformer implements ClassFileTransformer{
-    private String currentClassName;
+    private TransformFilter filter;
+
+    public OpcodeExtractionTransformer(){
+        this(new DefaultTransformFilter());
+    }
+
+    public OpcodeExtractionTransformer(TransformFilter filter){
+        this.filter = filter;
+        if(filter == null){
+            this.filter = new DefaultTransformFilter();
+        }
+    }
 
     /**
      * transforms given class file for extracting runtime opcode
@@ -27,31 +38,26 @@ public final class OpcodeExtractionTransformer implements ClassFileTransformer{
     public byte[] transform(final ClassLoader loader, final String className,
                             final Class<?> type, final ProtectionDomain domain,
                             final byte[] originalData){
-        TransformFilter filter = new DefaultTransformFilter();
+        return transform(className, originalData);
+    }
 
-        boolean flag = filter.filter(className);
-        this.currentClassName = className;
-        if(flag){
-            return transform(originalData);
+    public byte[] transform(final String className, final byte[] originalData){
+        if(filter.filter(className)){
+            ClassReader reader = new ClassReader(originalData);
+            ClassWriter writer = new ClassWriter(
+                ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS
+            );
+            OpcodeExtractVisitor visitor = new OpcodeExtractVisitor(writer);
+            reader.accept(visitor, ClassReader.SKIP_DEBUG);
+
+            return writer.toByteArray();
         }
         return null;
     }
 
-    public byte[] transform(final byte[] originalData){
-        ClassReader reader = new ClassReader(originalData);
-        ClassWriter writer = new ClassWriter(
-            ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS
-        );
-        OpcodeExtractVisitor visitor = new OpcodeExtractVisitor(writer);
-        reader.accept(visitor, ClassReader.SKIP_DEBUG);
-        this.currentClassName = visitor.getClassName();
-
-        return writer.toByteArray();
-    }
-
-    public void output(final String dest, final byte[] data){
+    public void output(final String dest, String className, final byte[] data){
         try{
-            File file = new File(dest, currentClassName + ".class");
+            File file = new File(dest, className + ".class");
             file.getParentFile().mkdirs();
             FileOutputStream out = new FileOutputStream(file);
             out.write(data);

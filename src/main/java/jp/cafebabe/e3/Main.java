@@ -20,17 +20,24 @@ import java.util.List;
 public class Main{
     private static final int BUFFER_SIZE = 256;
     private String dest = ".";
+    private String filterFile = null;
 
     /**
      * Constructor.
      * @param args program arguments
      */
-    public Main(final String[] args){
+    public Main(final String[] args) throws IOException{
         String[] arguments = parseOptions(args);
+
+        TransformFilter filter = null;
+        if(filterFile != null){
+            filter = new CsvTransformFilter(filterFile);
+        }
+        OpcodeExtractionTransformer transformer = new OpcodeExtractionTransformer(filter);
 
         for(String file: arguments){
             try{
-                perform(file);
+                perform(transformer, file);
             }
             catch(IOException e){
                 e.printStackTrace();
@@ -43,12 +50,16 @@ public class Main{
      * @param file transformation target class.
      * @throws IOException I/O error.
      */
-    private void perform(final String file) throws IOException{
+    private void perform(final OpcodeExtractionTransformer transformer,
+                         final String file) throws IOException{
         byte[] original = getData(file);
+        String className = ClassNameExtractVisitor.parseClassName(original);
 
-        OpcodeExtractionTransformer transformer = new OpcodeExtractionTransformer();
-        byte[] transformed = transformer.transform(original);
-        transformer.output(dest, transformed);
+        byte[] transformed = transformer.transform(className, original);
+        if(transformed == null){
+            transformed = original;
+        }
+        transformer.output(dest, className, transformed);
     }
 
     private byte[] getData(final String file) throws IOException{
@@ -86,6 +97,12 @@ public class Main{
                     i++;
                 }
             }
+            else if(args[i].equals("-f") || args[i].equals("--filter")){
+                if(i <= args.length){
+                    filterFile = args[i + 1];
+                    i++;
+                }
+            }
             else if(args[i].equals("-h") || args[i].equals("--help")){
                 showHelp();
                 exitFlag = true;
@@ -107,14 +124,14 @@ public class Main{
     private void showHelp(){
         String ln = System.getProperty("line.separator");
         StringBuilder sb = new StringBuilder();
-        sb.append("java -jar e3-1.0.jar [OPTIONS] <TARGETS...>").append(ln);
+        sb.append("java -jar e3-1.1-SNAPSHOT.jar [OPTIONS] <TARGETS...>").append(ln);
         sb.append(ln);
         sb.append("OPTIONS").append(ln);
-        sb.append("  -d, --dest <dest>: set output destination.").append(ln);
-        sb.append(
-            "                     Default is current directory."
-        ).append(ln);
-        sb.append("  -h, --help:        show this message").append(ln);
+        sb.append("  -d, --dest <dest>:     specify destination.").append(ln);
+        sb.append("                         Default is current directory.").append(ln);
+        sb.append("  -f, --filter <filter>: specify transformation filter.").append(ln);
+        sb.append("                         Default filter is prescripted.").append(ln);
+        sb.append("  -h, --help:            show this message.").append(ln);
         sb.append(ln);
         sb.append("TARGETS").append(ln);
         sb.append("  only accept Java class files.");
@@ -124,7 +141,7 @@ public class Main{
     /**
      * main method.
      */
-    public static void main(final String[] args){
+    public static void main(final String[] args) throws IOException{
         new Main(args);
     }
 }

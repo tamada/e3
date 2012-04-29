@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Default filter for selecting targets of transformation.
+ * This class is default filter for selecting targets of transformation.
  * This class has unmodifiable targets without compilation.
  *
  * @author Haruaki Tamada

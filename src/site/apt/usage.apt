@@ -33,10 +33,33 @@ $ java -classpath XXXXX YYYYY
  -jar オプションであっても同様に -javaagent:target/e3-1.0.jar とjavaコ
 マンドのオプションを追加指定して計測できるようになります．
 
-~~  実行後，現在のディレクトリに transformed_e3 ディレクトリが作成され，変
-~~ 換されたクラスファイルが出力されます（パッケージ階層などは無視されて出
-~~ 力されます）．そのディレクトリ内のクラスファイルを対象に静的に分析でき
-~~ るようになっています．
+* {Transformation Targets}
+
+ e3 は変換対象でないプログラムを判定するため，フィルタリングを行います．
+デフォルトでは標準ライブラリなど一般的に良く使われているライブラリは変
+換対象として選択されず，解析の対象外としています．具体的な内容は
+src/sample/resources/filtering.csv，もしくは
+jp.cafebabe.e3.DefaultTransformFilter を参照して下さい．
+
+ 独自にフィルタリング対象を指定したい場合，実行時に設定ファイルで指定で
+きます．このアルゴリズムは，パッケージ名を含むクラス名が前方一致すれば
+変換対象としません．そのため，設定ファイルには変換対象に含めたくないク
+ラスのパッケージを指定して下さい．設定ファイルの各項目はコンマ(,)もしく
+は改行で区切られます．シャープ(#)で始まる行はコメント行と見なされます．
+この設定ファイルを指定する場合は，以下のように指定できます．javaagent
+の jar ファイルの指定後，=以降が，javaagent への引数です．filterが引数
+名であり，引数名と値の区切り文字はコロン(:)です．ここでは，引数値として
+filter.csvを指定していますが，実際には適切なファイルを指定して下さい．
+
+ なお，パッケージ階層の区切りは，Javaプログラムの場合ピリオド(.)ですが，
+バイトコードの場合スラッシュ(/)です．この設定ファイルでは，どちらの文字
+での指定でもサポートしています．
+
+----
+$ java -javaagent:target/e3-1.0.jar=filter:filter.csv
+       -classpath XXXXX
+       YYYYY
+----
 
 {Statically Transformation}
 
@@ -48,8 +71,9 @@ $ java -classpath XXXXX YYYYY
 $ java -jar e3-1.0.jar [OPTIONS] <TARGETS...>
 
 OPTIONS
-  -d, --dest <dest>: set output destination. Default is current directory.
-  -h, --help:        show this message
+  -d, --dest <dest>:     specify destination.  Default is current directory.
+  -f, --filter <filter>: specify transformation filter.  Default filter is prescripted.
+  -h, --help:            show this message.
 
 TARGETS
   only accept Java class files.
@@ -60,9 +84,19 @@ TARGETS
 実行するには，このjarファイル(e3-1.0.jar)にクラスパスを通さなくてはいけ
 ません．
 
-{Transformation Targets}
+* {Transformation Targets}
 
  変換対象は src/main/java/entropy/DefaultTransfomFilter.java で制御され
 ています．java, javax, sun, sunw, org.apache などのパッケージで始まるク
-ラスは変換対象外となっています．必要に応じて，上記クラスを書き換えてく
-ださい．
+ラスは変換対象外となっています．
+
+ もし，独自の変換ルールを用いたい場合は -f (--filter) オプションに変換
+ルールを書いたファイルを指定して制御できます．このアルゴリズムは，パッ
+ケージ名を含むクラス名が前方一致すれば変換対象としません．そのため，設
+定ファイルには変換対象に含めたくないクラスのパッケージを指定して下さい．
+設定ファイルの各項目はコンマ(,)もしくは改行で区切られます．シャープ(#)
+で始まる行はコメント行と見なされます．
+
+ なお，パッケージ階層の区切りは，Javaプログラムの場合ピリオド(.)ですが，
+バイトコードの場合スラッシュ(/)です．この設定ファイルでは，どちらの文字
+での指定でもサポートしています．

@@ -1,0 +1,14 @@
+# This is comment line.
+# Separator of package hierarchy is '.' or '/'. 
+# This configuration file support both and mixed separator.
+java/
+javax/
+sun/
+sunw/
+org.apache/
+org/objectweb
+org/eclipse
+org/junit
+com.apple
+jp/cafebabe/e3
+HelloWorld
