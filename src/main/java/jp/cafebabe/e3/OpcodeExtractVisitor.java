@@ -64,19 +64,7 @@ public final class OpcodeExtractVisitor extends ClassVisitor{
 
         @Override
         public void visitInsn(final int opcode){
-            if(opcode == Opcodes.RETURN
-               || opcode == Opcodes.IRETURN
-               || opcode == Opcodes.LRETURN
-               || opcode == Opcodes.FRETURN
-               || opcode == Opcodes.DRETURN
-               || opcode == Opcodes.ARETURN){
-                super.visitMethodInsn(
-                    Opcodes.INVOKESTATIC, ECMANAGER,
-                    "returnMethod", METHOD_DESC
-                );
-            }
-            String methodName =
-                OpcodeManager.getInstance().getMethodName(opcode);
+            String methodName = OpcodeManager.getInstance().getMethodName(opcode);
             super.visitMethodInsn(
                 Opcodes.INVOKESTATIC, ECMANAGER, methodName, METHOD_DESC
             );

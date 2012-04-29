@@ -1,5 +1,8 @@
 package jp.cafebabe.e3.exec;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +15,10 @@ import java.util.ServiceLoader;
  */
 public final class EntropyCounterManager{
     private static final int BYTE = 0xff;
-    private static final EntropyCounterManager MANAGER =
-        new EntropyCounterManager();
-    private EntropyCounter currentMethod = new MethodEntropyCounter("", "");
+    private static final EntropyCounterManager MANAGER = new EntropyCounterManager();
+    private EntropyCounter currentMethod = null;
     private List<EntropyCounter> stack = new ArrayList<EntropyCounter>();
-    private List<EntropyCounter> executionList =
-        new ArrayList<EntropyCounter>();
+    private List<EntropyCounter> executionList = new ArrayList<EntropyCounter>();
 
     private EntropyCounterManager(){
         Runtime.getRuntime().addShutdownHook(new Thread(){
@@ -36,26 +37,20 @@ public final class EntropyCounterManager{
     }
 
     public static void entryMethod(final String className,
-                                   final String methodName){
-        // manager.enterMethod(className, methodName);
+                            final String methodName){
+        MANAGER.enterMethod(className, methodName);
     }
 
-    public static void returnMethod(){
-        // manager.exitMethod();
+    static void returnMethod(){
+        MANAGER.exitMethod();
     }
 
     /**
-     * <p>
-     * 各メソッドごとに実行されるインストラクションを収集したいが，
-     * スタックの積み下ろしにバグがあるため，今のところ，未対応．
-     * </p><p>
-     * 将来的に実行されたメソッドごとに実行されたインストラクションを収
-     * 集できるようにしたい．
-     * </p>
-     * @param className クラス名
-     * @param methodName メソッド名
+     * This method is called for collecting runtime opcode sequence in
+     * each method when the given method is invoked.
+     * @param className class name
+     * @param methodName is the method name which is invoked now. 
      */
-    @SuppressWarnings("unused")
     private void enterMethod(final String className, final String methodName){
         MethodEntropyCounter method =
             new MethodEntropyCounter(className, methodName);
@@ -65,15 +60,10 @@ public final class EntropyCounterManager{
     }
 
     /**
-     * <p>
-     * 各メソッドごとに実行されるインストラクションを収集したいが，
-     * スタックの積み下ろしにバグがあるため，今のところ，未対応．
-     * </p><p>
-     * 将来的に実行されたメソッドごとに実行されたインストラクション
-     * を収集できるようにしたい．
-     * </p>
+     * This method is called for reporting current method is finished.
+     * This method is called when IRETURN, LRETURN, FRETURN, DRETURN,
+     * ARETURN, RETURN instruction were invoked.
      */
-    @SuppressWarnings("unused")
     private void exitMethod(){
         stack.remove(stack.size() - 1);
         if(stack.size() > 0){
@@ -86,41 +76,47 @@ public final class EntropyCounterManager{
 
     public synchronized void summarize(){
         OpcodeManager manager = OpcodeManager.getInstance();
-        byte[] sequence = new byte[currentMethod.getSize()];
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
 
-        Map<Integer, Integer> opcodeCounter =
-            printExecutionTrace(manager, sequence);
-        printEntropy(manager, opcodeCounter);
-        calculateKolmogorov(sequence);
+        Map<Integer, Integer> opcodeCounter = printExecutionTrace(out, manager, bout);
+        printEntropy(out, manager, opcodeCounter);
+        calculateKolmogorov(out, bout.toByteArray());
+        out.flush();
     }
 
-    private Map<Integer, Integer> printExecutionTrace(OpcodeManager manager,
-                                                      byte[] sequence){
+    private Map<Integer, Integer> printExecutionTrace(PrintWriter out,
+                                                      OpcodeManager manager,
+                                                      ByteArrayOutputStream bout){
         Map<Integer, Integer> opcodeCounter = new TreeMap<Integer, Integer>();
-        int index = 0;
-        System.out.println(
-            "#################### execution trace (opcode,name) ######################"
+        out.println(
+            "############## execution trace (class,method,opcode,name) ###############"
         );
 
-        for(Integer opcode: currentMethod){
-            System.out.print(opcode);
-            System.out.println("," + manager.getName(opcode));
-            Integer count = opcodeCounter.get(opcode);
-            if(count == null){
-                count = Integer.valueOf(1);
-            }
-            else{
-                count = Integer.valueOf(count.intValue() + 1);
-            }
-            opcodeCounter.put(opcode, count);
+        for(EntropyCounter mec: executionList){
+            String className = ((MethodEntropyCounter)mec).getClassName();
+            String methodName = ((MethodEntropyCounter)mec).getMethodName();
+            for(Integer opcode: mec){
+                out.printf(
+                    "%s,%s,%d,%s%n", className, methodName,
+                    opcode, manager.getName(opcode)
+                );
+                Integer count = opcodeCounter.get(opcode);
+                if(count == null){
+                    count = Integer.valueOf(1);
+                }
+                else{
+                    count = Integer.valueOf(count.intValue() + 1);
+                }
+                opcodeCounter.put(opcode, count);
 
-            sequence[index] = (byte)(opcode & BYTE);
-            index++;
+                bout.write(opcode);
+            }
         }
         return opcodeCounter;
     }
 
-    private void printEntropy(OpcodeManager manager,
+    private void printEntropy(PrintWriter out, OpcodeManager manager,
                               Map<Integer, Integer> opcodeCounter){
         // 出現した命令を基にエントロピーを計算する．
         double entropy = 0d;
@@ -128,14 +124,14 @@ public final class EntropyCounterManager{
         double entropy2 = 0d;
         double log2 = Math.log(2);
 
-        System.out.println(
+        out.println(
             "################ frequency of trace (opcode,name,count) #################"
         );
         for(Map.Entry<Integer, Integer> entry: opcodeCounter.entrySet()){
             String name = manager.getName(entry.getKey());
             int opcode = entry.getKey();
             int count = entry.getValue();
-            System.out.printf("%d,%s,%d%n", opcode, name, count);
+            out.printf("%d,%s,%d%n", opcode, name, count);
 
             double probability = (double)count / opcodeCounter.size();
             double probability2 = (double)count / manager.getSize();
@@ -144,22 +140,22 @@ public final class EntropyCounterManager{
             entropy2 += -1 * probability2 * (Math.log(probability2) / log2);
         }
 
-        System.out.println(
+        out.println(
             "################################ entropy ################################"
         );
-        System.out.println(entropy);
-        System.out.println(entropy2);
+        out.println(entropy);
+        out.println(entropy2);
     }
 
-    private void calculateKolmogorov(byte[] sequence){
-        System.out.println(
+    private void calculateKolmogorov(PrintWriter out, byte[] sequence){
+        out.println(
             "########## kolmogorov complexity (algorithm,after,before,rate) ##########"
         );
         ServiceLoader<KolmogorovCalculator> loader =
             ServiceLoader.load(KolmogorovCalculator.class);
 
         for(KolmogorovCalculator calculator: loader){
-            System.out.println(calculator.getSummary(sequence));
+            out.println(calculator.getSummary(sequence));
         }
     }
 
