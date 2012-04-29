@@ -1,5 +1,8 @@
 package jp.cafebabe.e3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Default filter for selecting targets of transformation.
  * This class has unmodifiable targets without compilation.
@@ -7,6 +10,21 @@ package jp.cafebabe.e3;
  * @author Haruaki Tamada
  */
 public final class DefaultTransformFilter implements TransformFilter {
+    private List<String> targets = new ArrayList<String>();
+
+    public DefaultTransformFilter(){
+        targets.add("java/");
+        targets.add("javax/");
+        targets.add("sun/");
+        targets.add("sunw/");
+        targets.add("org/apache/");
+        targets.add("org/objectweb/");
+        targets.add("org/eclipse");
+        targets.add("org/junit/");
+        targets.add("com/apple/");
+        targets.add("jp/cafebabe/e3/");
+    }
+
     /**
      * This method returns that the given className is the target of
      * transformation or not.  If this method returns true, the class
@@ -18,17 +36,10 @@ public final class DefaultTransformFilter implements TransformFilter {
      */
     @Override
     public boolean filter(final String className) {
-        if(className.startsWith("java/")
-           || className.startsWith("javax/")
-           || className.startsWith("org/objectweb/")
-           || className.startsWith("org/apache/")
-           || className.startsWith("org/eclipse/")
-           || className.startsWith("com/apple/")
-           || className.startsWith("org/junit/")
-           || className.startsWith("jp/cafebabe/e3/")
-           || className.startsWith("sunw/")
-           || className.startsWith("sun/")) {
-            return false;
+        for(String packageName: targets){
+            if(className.startsWith(packageName)){
+                return false;
+            }
         }
         return true;
     }
