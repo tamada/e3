@@ -3,19 +3,26 @@ package jp.cafebabe.e3.exec;
 import java.io.IOException;
 
 /**
+ * This interface represents to calculate kolmogorov complexity of
+ * runtime opcodes sequence by use of compression rate.  The
+ * Kolmogorov complexity is the shortest program to aquire same
+ * output, however, cannot calculate.
+ * Therefore, it usually represents as compression rate instead of
+ * calculation.
  * 
+ * @author Haruaki Tamada
  */
 public interface KolmogorovCalculator{
     /**
      * returns summarize string for output.
      * @see EntropyCounterManager#summarize
-     * @param data is used for argument of {@link compress
+     * @param data is used for argument of {@link #compress
      * <code>compress</code>} method.
      */
     String getSummary(byte[] data);
 
     /**
-     * perform compress.
+     * Performs compression for calculating kolmogorov complexity.
      * @param data is original data for compression
      * @return compressed data
      */

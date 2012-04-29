@@ -7,6 +7,12 @@ import org.objectweb.asm.Opcodes;
 
 import jp.cafebabe.e3.exec.OpcodeManager;
 
+/**
+ * This class is visitor class for ASM, and weaves the code to extract
+ * opcode sequence into target class.
+ *
+ * @author Haruaki Tamada
+ */
 public final class OpcodeExtractVisitor extends ClassVisitor{
     private static final String ECMANAGER = "jp/cafebabe/e3/exec/EntropyCounterManager";
     private static final String METHOD_DESC = "()V";

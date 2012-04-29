@@ -3,8 +3,18 @@ package jp.cafebabe.e3.exec;
 import java.util.Iterator;
 
 /**
+ * <p>
  * Counting executed opcodes interface at runtime for calculating
  * entropy of the program.
+ * </p><p>
+ * This interface has many methods. However, except 3 methods are for
+ * counting instruction.  The 3 methods are as follows.
+ * </p>
+ * <ul>
+ *   <li>{@link #iterator <code>iterator</code>}</li>
+ *   <li>{@link #getSize <code>getSize</code>}</li>
+ *   <li>{@link #summarize <code>summarize</code>}</li>
+ * </ul>
  * @author Haruaki Tamada
  */
 public interface EntropyCounter extends Iterable<Integer>{
@@ -787,7 +797,10 @@ public interface EntropyCounter extends Iterable<Integer>{
     void newarray();
 
     /**
-     * This method is called at execution of NOMETHOD instruction.
+     * This method is never called because corresponding opcodes are
+     * UNUSED and WIDE.  Those opcodes do not affect runtime opcode
+     * sequence.  UNUSED opcode is never used, and WIDE opcode only
+     * expands operand index.
      */
     void noMethod();
 

@@ -3,7 +3,12 @@ package jp.cafebabe.e3.exec;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public final class EmptyMethodEntropyCounter implements EntropyCounter{
+/**
+ * empty {@link MethodEntropyCounter <code>MethodEntropyCounter</code>}.
+ * @see MethodEntropyCounter
+ * @author Haruaki Tamada
+ */
+public class EmptyMethodEntropyCounter implements EntropyCounter{
     public Iterator<Integer> iterator(){
         return new ArrayList<Integer>().iterator();
     }

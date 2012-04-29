@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Subclass of this class must implements {@link #summarize
+ * <code>summarize</code>} method for output result.
  *
  * @author Haruaki Tamada
  */

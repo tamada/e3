@@ -29,7 +29,7 @@ public final class EntropyCounterManager{
     }
 
     /**
-     * This method returns singleton object of this class.
+     * Returns singleton object of this class.
      * @return singleton object of this class.
      */
     public static EntropyCounterManager getInstance(){

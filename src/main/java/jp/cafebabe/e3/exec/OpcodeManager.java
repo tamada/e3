@@ -8,23 +8,43 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
+ * <p>
  * This class manage the relationship of instruction and method which
  * is called for executing corresponding instruction.
- * This class read definition of relationships.
+ * Relationships are build from reading configuration file.
+ * </p><p>
+ * The configuration file is read in loading phase by static
+ * initializer of this class.
+ * </p>
  * @author Haruaki Tamada
  */
 public final class OpcodeManager{
     private static final OpcodeManager INSTANCE;
     private final Map<String, Opcode> opcodes;
 
+    /**
+     * private constructor for singleton pattern.
+     * @param opcodes opcodes map from configuration file.
+     */
     private OpcodeManager(final Map<String, Opcode> opcodes){
         this.opcodes = opcodes;
     }
 
+    /**
+     * returns the number of opcodes.
+     * @return opcode count
+     */
     public int getSize(){
         return opcodes.size();
     }
 
+    /**
+     * returns corresponding method name of given opcode name.  This
+     * method returns null, when opcode is not found, and given opcode
+     * name is null.
+     * @param opcodeName opcode name
+     * @return corresponding method name.
+     */
     public String getMethodName(final String opcodeName){
         Opcode opcode = opcodes.get(opcodeName);
         String name = null;
@@ -34,6 +54,12 @@ public final class OpcodeManager{
         return name;
     }
 
+    /**
+     * returns corresponding method name of given opcode.
+     * If given opcode is invalid, this method returns null.
+     * @param opcode opcode
+     * @return corresponding method name.
+     */
     public String getMethodName(final int opcode){
         for(Opcode code: opcodes.values()){
             if(code.getOpcode() == opcode){
@@ -43,6 +69,12 @@ public final class OpcodeManager{
         return null;
     }
 
+    /**
+     * returns opcode name of given opcode.
+     * If given opcode is invalid, this method returns null.
+     * @param opcode opcode
+     * @return corresponding opcode name
+     */
     public String getName(final int opcode){
         for(Opcode code: opcodes.values()){
             if(code.getOpcode() == opcode){
@@ -52,6 +84,13 @@ public final class OpcodeManager{
         return null;
     }
 
+    /**
+     * returns opcode of given opcode name.  If given opcode name is
+     * null, or corresponding opcode is not found, this method returns
+     * null.
+     * @param opcodeName opcode name
+     * @return corresponding opcode
+     */
     public int getOpcode(final String opcodeName){
         Opcode opcode = opcodes.get(opcodeName);
         int id = -1;
@@ -61,6 +100,9 @@ public final class OpcodeManager{
         return id;
     }
 
+    /**
+     * returns singleton object.
+     */
     public static OpcodeManager getInstance(){
         return INSTANCE;
     }

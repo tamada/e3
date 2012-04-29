@@ -4,9 +4,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.Deflater;
 
+/**
+ * This class calculate kolmogorov complexity by deflate compression
+ * algorithm.
+ * @author Haruaki Tamada
+ */
 public class DeflateKolmogorovCalculator extends AbstractKolmogorovCalculator{
     private static final int BUFFER_SIZE = 256;
 
+    /**
+     * Always returns &quot;deflate&quot;.
+     * @return &quot;deflate&quot;
+     */
     public String getName(){
         return "deflate";
     }
@@ -26,9 +35,5 @@ public class DeflateKolmogorovCalculator extends AbstractKolmogorovCalculator{
         byte[] compressed = out.toByteArray();
         out.close();
         return compressed;
-    }
-
-    public boolean isAvailable(){
-        return true;
     }
 }

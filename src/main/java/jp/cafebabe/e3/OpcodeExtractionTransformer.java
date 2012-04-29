@@ -9,9 +9,20 @@ import java.security.ProtectionDomain;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
+/**
+ * The implementation class of <code>ClassFileTransformer</code>
+ * interface.  Actual transformation is provided {@link
+ * OpcodeExtractVisitor <code>OpcodeExtractVisitor</code>} class.
+ *
+ * @author Haruaki Tamada
+ */
 public final class OpcodeExtractionTransformer implements ClassFileTransformer{
     private String currentClassName;
 
+    /**
+     * transforms given class file for extracting runtime opcode
+     * sequence by weaving extracting code.
+     */
     @Override
     public byte[] transform(final ClassLoader loader, final String className,
                             final Class<?> type, final ProtectionDomain domain,
@@ -21,16 +32,7 @@ public final class OpcodeExtractionTransformer implements ClassFileTransformer{
         boolean flag = filter.filter(className);
         this.currentClassName = className;
         if(flag){
-            ClassReader reader = new ClassReader(originalData);
-            ClassWriter writer = new ClassWriter(
-                ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS
-            );
-            OpcodeExtractVisitor visitor = new OpcodeExtractVisitor(writer);
-            reader.accept(visitor, ClassReader.SKIP_DEBUG);
-
-            byte[] transformedData = writer.toByteArray();
-
-            return transformedData;
+            return transform(originalData);
         }
         return null;
     }
@@ -42,14 +44,9 @@ public final class OpcodeExtractionTransformer implements ClassFileTransformer{
         );
         OpcodeExtractVisitor visitor = new OpcodeExtractVisitor(writer);
         reader.accept(visitor, ClassReader.SKIP_DEBUG);
-
         this.currentClassName = visitor.getClassName();
 
         return writer.toByteArray();
-    }
-
-    public String getClassName(){
-        return currentClassName;
     }
 
     public void output(final String dest, final byte[] data){

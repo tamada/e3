@@ -10,10 +10,10 @@ import java.util.List;
 /**
  * This class perform to transform given classes for
  * extracting/calculating runtime entropy.  For extracting runtime
- * entropy, this class weaves extracting method calls to each
- * instruction.  Resultant program can extract runtime instruction
- * list and calculate entropy.  Note that, resultant program requires
- * the library of this class.
+ * entropy, this class weaves extracting method calls to each opcode.
+ * Resultant program can extract runtime opcode list and calculate
+ * entropy.  Note that, resultant program requires the library of this
+ * class.
  *
  * @author Haruaki Tamada
  */
@@ -23,7 +23,7 @@ public class Main{
 
     /**
      * Constructor.
-     * @param args プログラムの引数．
+     * @param args program arguments
      */
     public Main(final String[] args){
         String[] arguments = parseOptions(args);
@@ -46,8 +46,7 @@ public class Main{
     private void perform(final String file) throws IOException{
         byte[] original = getData(file);
 
-        OpcodeExtractionTransformer transformer =
-            new OpcodeExtractionTransformer();
+        OpcodeExtractionTransformer transformer = new OpcodeExtractionTransformer();
         byte[] transformed = transformer.transform(original);
         transformer.output(dest, transformed);
     }
