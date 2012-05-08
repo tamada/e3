@@ -1,6 +1,6 @@
 0,nop,nop
 1,aconst_null,aconstNull
-2,iconst_m1,0,iconstM1
+2,iconst_m1,iconstM1
 3,iconst_0,iconst0
 4,iconst_1,iconst1
 5,iconst_2,iconst2
