@@ -91,11 +91,11 @@ public static void main(java.lang.String[]);
 
 ----
 Hello World
-#################### execution trace (opcode,name) ######################
-178,getstatic
-18,ldc
-182,invokevirtual
-177,return
+############## execution trace (class,method,opcode,name) ###############
+HelloWorld,main,178,getstatic
+HelloWorld,main,18,ldc
+HelloWorld,main,182,invokevirtual
+HelloWorld,main,177,return
 ################ frequency of trace (opcode,name,count) #################
 18,ldc,1
 177,return,1
@@ -103,7 +103,6 @@ Hello World
 182,invokevirtual,1
 ################################ entropy ################################
 2.0
-0.13741912305552179
 ########## kolmogorov complexity (algorithm,after,before,rate) ##########
 deflate,12,4,3.000000
 ----
@@ -120,11 +119,8 @@ deflate,12,4,3.000000
 対応する名前，実行された回数が１行で出力されます．ここに出力される行数
 が，当該プログラムで使用されている命令一覧になります．
 
- 4つ目の区画は以下の式で表される平均情報量が計算されて出力されます．2つ
-出力されていますが，1行目はその実行において使われた命令でエントロピーを
-計算しています．2行目は，Javaプログラムの全ての命令におけるエントロピー
-を計算しています．この違いは，以下の式のpiの求め方にあります．全体の命
-令をどのように求めるかが異なっています．
+ 4つ目の区画は以下の式で表される以下の計算式に基づいて，平均情報量が出
+力されます．
 
 [images/entropy.png]
 
@@ -148,7 +144,7 @@ deflate,12,4,3.000000
 
 {Requirements}
 
- このツールは以下のライブラリを使用しています．e3-1.0.jar と同じディレ
+ このツールは以下のライブラリを使用しています．e3-1.1.jar と同じディレ
 クトリに置いておけば自動的にクラスパスが設定されます．
 
  * {{{http://asm.ow2.org/}ASM 4.0}} (asm-4.0.jar) 
