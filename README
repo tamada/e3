@@ -1,7 +1,8 @@
                       e3: 動的エントロピー計測器
 
                                                         Haruaki Tamada
-                                                        2012.3.18 (Sun)
+                                        First released: 2012. 3.18 (Sun)
+                                      Recently revised: 2012. 5. 8 (Wed)
 
 * はじめに
 
@@ -86,11 +87,11 @@ public static void main(java.lang.String[]);
 
 <code>
 Hello World
-#################### execution trace (opcode,name) ######################
-178,getstatic
-18,ldc
-182,invokevirtual
-177,return
+############## execution trace (class,method,opcode,name) ###############
+HelloWorld,main,178,getstatic
+HelloWorld,main,18,ldc
+HelloWorld,main,182,invokevirtual
+HelloWorld,main,177,return
 ################ frequency of trace (opcode,name,count) #################
 18,ldc,1
 177,return,1
@@ -98,7 +99,6 @@ Hello World
 182,invokevirtual,1
 ################################ entropy ################################
 2.0
-0.13741912305552179
 ########## kolmogorov complexity (algorithm,after,before,rate) ##########
 deflate,12,4,3.000000
 </code>
@@ -110,7 +110,7 @@ deflate,12,4,3.000000
   通常はこちらの起動方法で起動します．以下のように，javaコマンドの-jar
 オプションに渡せば実行できます．
 
-> $ java -jar e3-1.0.jar [OPTIONS] <TARGETS...>
+> $ java -jar e3-1.1.jar [OPTIONS] <TARGETS...>
 > 
 > OPTIONS
 >   -d, --dest <dest>: set output destination. Default is current directory.
@@ -121,7 +121,7 @@ deflate,12,4,3.000000
 
 -d は変換後のクラスファイルの出力先を表します．デフォルトはカレントディ
 レクトリです．変換後のプログラムは，このjarファイル
-(e3-1.0.jar)にもクラスパスを通さなければ，実行できなくな
+(e3-1.1.jar)にもクラスパスを通さなければ，実行できなくな
 ります．
 
 
@@ -133,8 +133,8 @@ deflate,12,4,3.000000
 (src, target, pom.xml, READMEの4つのファイル，ディレクトリが存在するディ
 レクトリ)．
 
-> $ java -javaagent target/e3-1.0.jar 
->        -classpath 'target/e3-1.0.jar:XXXXX'
+> $ java -javaagent target/e3-1.1.jar 
+>        -classpath 'target/e3-1.1.jar:XXXXX'
 >        YYYYY
 
 ここで，YYYYYは計測対象となるクラスファイルの指定，XXXXXはYYYYYが存在す
@@ -149,10 +149,30 @@ $ java -classpath XXXXX YYYYY
 
 ** 変換対象
 
-変換対象は src/main/java/jp/cafebabe/e3/DefaultTransfomFilter.java で制
-御されています．java, javax, sun, sunw, org.apache, などのパッケージで
-始まるクラスは変換対象外となっています．必要に応じて，上記クラスを書き
-換えてください．
+ e3 は変換対象でないプログラムを判定するため，フィルタリングを行います．
+デフォルトでは標準ライブラリなど一般的に良く使われているライブラリは変
+換対象として選択されず，解析の対象外としています．具体的な内容は
+src/sample/resources/filtering.csv，もしくは
+jp.cafebabe.e3.DefaultTransformFilter を参照して下さい．
+
+ 独自にフィルタリング対象を指定したい場合，実行時に設定ファイルで指定で
+きます．このアルゴリズムは，パッケージ名を含むクラス名が前方一致すれば
+変換対象としません．そのため，設定ファイルには変換対象に含めたくないク
+ラスのパッケージを指定して下さい．設定ファイルの各項目はコンマ(,)もしく
+は改行で区切られます．シャープ(#)で始まる行はコメント行と見なされます．
+この設定ファイルを指定する場合は，以下のように指定できます．javaagent
+の jar ファイルの指定後，=以降が，javaagent への引数です．filterが引数
+名であり，引数名と値の区切り文字はコロン(:)です．ここでは，引数値として
+filter.csvを指定していますが，実際には適切なファイルを指定して下さい．
+
+ なお，パッケージ階層の区切りは，Javaプログラムの場合ピリオド(.)ですが，
+バイトコードの場合スラッシュ(/)です．この設定ファイルでは，どちらの文字
+での指定でもサポートしています．
+
+> $ java -javaagent:target/e3-1.1.jar=filter:filter.csv
+>        -classpath XXXXX
+>        YYYYY
+
 
 * 依存ライブラリ
 
@@ -162,7 +182,7 @@ $ java -classpath XXXXX YYYYY
  * asm 4.0 (バイトコードの書き換えに用いています)
 
 ツールのディレクトリで，mvn package と入力すれば，コンパイルされ，
-target ディレクトリに e3-1.0.jar が作成されます．
+target ディレクトリに e3-1.1.jar が作成されます．
 
 * 連絡先
 

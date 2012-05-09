@@ -8,7 +8,13 @@
 
 {Version History}
 
-* version 1.1-SNAPSHOT
+* version 1.1
+
+ * Bug fixed: negative entropy is calculated.  Calculating probability
+   of instruction phase was invalid.
+
+ * Bug fixed: NoSuchMethodError was thrown at iconst_m1 instruction
+   (use -1 in source code form).
 
  * Enable to collect runtime opcode sequence in each method.
 
@@ -20,7 +26,7 @@
 
 {Roadmap}
 
-* version 1.1
+* version 1.2
 
  * Enable to select writing transformed programs or not in dynamically transformation.
 
