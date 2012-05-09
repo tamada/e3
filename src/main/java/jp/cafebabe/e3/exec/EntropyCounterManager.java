@@ -123,6 +123,10 @@ public final class EntropyCounterManager{
         // JVMに定義されている全ての命令を基にエントロピーを計算する．
         double entropy2 = 0d;
         double log2 = Math.log(2);
+        int total = 0;
+        for(Integer count: opcodeCounter.values()){
+            total += count.intValue();
+        }
 
         out.println(
             "################ frequency of trace (opcode,name,count) #################"
@@ -133,18 +137,16 @@ public final class EntropyCounterManager{
             int count = entry.getValue();
             out.printf("%d,%s,%d%n", opcode, name, count);
 
-            double probability = (double)count / opcodeCounter.size();
-            double probability2 = (double)count / manager.getSize();
+            double probability = (double)count / total;
 
-            entropy += -1 * probability * (Math.log(probability) / log2);
-            entropy2 += -1 * probability2 * (Math.log(probability2) / log2);
+            entropy += probability * (Math.log(probability) / log2);
         }
+        entropy *=  -1;
 
         out.println(
             "################################ entropy ################################"
         );
         out.println(entropy);
-        out.println(entropy2);
     }
 
     private void calculateKolmogorov(PrintWriter out, byte[] sequence){
