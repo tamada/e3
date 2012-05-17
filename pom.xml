@@ -7,7 +7,7 @@
 
   <groupId>jp.cafebabe</groupId>
   <artifactId>e3</artifactId>
-  <version>1.1</version>
+  <version>1.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>e3: Entropy Extracting Executor</name>
   <url>http://cafebabe.jp/e3/</url>

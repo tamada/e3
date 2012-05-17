@@ -14,14 +14,6 @@ import java.io.IOException;
  */
 public interface KolmogorovCalculator{
     /**
-     * returns summarize string for output.
-     * @see EntropyCounterManager#summarize
-     * @param data is used for argument of {@link #compress
-     * <code>compress</code>} method.
-     */
-    String getSummary(byte[] data);
-
-    /**
      * Performs compression for calculating kolmogorov complexity.
      * @param data is original data for compression
      * @return compressed data
