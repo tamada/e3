@@ -58,6 +58,13 @@ public final class OpcodeExtractVisitor extends ClassVisitor{
         }
 
         @Override
+        public void visitLineNumber(int line, Label start){
+            super.visitLdcInsn(line);
+            super.visitMethodInsn(Opcodes.INVOKESTATIC, ECMANAGER, "visitLine", "(I)V");
+            super.visitLineNumber(line, start);
+        }
+
+        @Override
         public void visitCode(){
             super.visitCode();
             super.visitLdcInsn(className);

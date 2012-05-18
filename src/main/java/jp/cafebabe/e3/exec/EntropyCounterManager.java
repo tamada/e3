@@ -87,6 +87,10 @@ public final class EntropyCounterManager{
         return MANAGER.currentMethod;
     }
 
+    public static void visitLine(int line){
+        getCounter().visitLine(line);
+    }
+
     /**
      * This method called when AALOAD is executed.
      */

@@ -48,7 +48,7 @@ public final class OpcodeExtractionTransformer implements ClassFileTransformer{
                 ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS
             );
             OpcodeExtractVisitor visitor = new OpcodeExtractVisitor(writer);
-            reader.accept(visitor, ClassReader.SKIP_DEBUG);
+            reader.accept(visitor, 0);
 
             return writer.toByteArray();
         }

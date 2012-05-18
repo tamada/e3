@@ -1,8 +1,10 @@
 package jp.cafebabe.e3.exec;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Subclass of this class must implements {@link #summarize
@@ -12,6 +14,7 @@ import java.util.List;
  */
 public class AbstractEntropyCounter implements EntropyCounter{
     private List<Integer> opcodes = new ArrayList<Integer>();
+    private Map<Integer, Integer> lineNumberMap = new HashMap<Integer, Integer>();
 
     /**
      * returns opcodes sequence in this object.
@@ -27,6 +30,21 @@ public class AbstractEntropyCounter implements EntropyCounter{
 
     @Override
     public void summarize(){
+    }
+
+    @Override
+    public final int getLine(int opcodeSize){
+        Integer value = lineNumberMap.get(opcodeSize);
+        int v = -1;
+        if(value != null){
+            v = value.intValue();
+        }
+        return v;
+    }
+
+    @Override
+    public final void visitLine(int line){
+        lineNumberMap.put(opcodes.size(), line);
     }
 
     @Override

@@ -23,9 +23,12 @@ public class ResultSet implements Serializable{
         for(EntropyCounter mec: list){
             String className = ((MethodEntropyCounter)mec).getClassName();
             String methodName = ((MethodEntropyCounter)mec).getMethodName();
+
+            int count = 0;
+            int line = mec.getLine(count);
             for(Integer opcode: mec){
                 String name = manager.getName(opcode);
-                opcodeList.add(new ResultOpcode(className, methodName, opcode, name));
+                opcodeList.add(new ResultOpcode(className, methodName, opcode, name, line));
 
                 OpcodeFrequency freq = opcodeFreq.get(opcode);
                 if(freq == null){
@@ -34,6 +37,11 @@ public class ResultSet implements Serializable{
                 }
                 freq.increment();
                 out.write(opcode);
+                count++;
+                int newLine = mec.getLine(count);
+                if(newLine != -1){
+                    line = newLine;
+                }
             }
         }
 
@@ -42,7 +50,7 @@ public class ResultSet implements Serializable{
 
     public void print(PrintWriter out){
         out.println(
-            "############## execution trace (class,method,opcode,name) ###############"
+            "########### execution trace (class,method,opcode,name,line) #############"
         );
         for(ResultOpcode ro: opcodeList){
             out.println(ro);

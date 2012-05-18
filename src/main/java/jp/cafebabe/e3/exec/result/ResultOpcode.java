@@ -7,12 +7,18 @@ public class ResultOpcode implements Serializable{
     private String methodName;
     private int opcode;
     private String name;
+    private int line = -1;
 
     public ResultOpcode(String className, String methodName, int opcode, String name){
+        this(className, methodName, opcode, name, -1);
+    }
+
+    public ResultOpcode(String className, String methodName, int opcode, String name, int line){
         this.className = className;
         this.methodName = methodName;
         this.opcode = opcode;
         this.name = name;
+        this.line = line;
     }
 
     public String getClassName(){
@@ -31,10 +37,14 @@ public class ResultOpcode implements Serializable{
         return name;
     }
 
+    public int getLineNumber(){
+        return line;
+    }
+
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append(getClassName()).append(",").append(getMethodName()).append(",");
-        sb.append(getOpcode()).append(",").append(getOpcodeName());
+        sb.append(getOpcode()).append(",").append(getOpcodeName()).append(",").append(line);
         return new String(sb);
     }
 }

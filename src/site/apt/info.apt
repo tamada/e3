@@ -34,8 +34,6 @@
 
 * version 1.2
 
- * Show line number in each instruction.
-
  * Enable to select writing transformed programs or not in dynamically transformation.
 
  * Accept jar files as input in statically transformation.

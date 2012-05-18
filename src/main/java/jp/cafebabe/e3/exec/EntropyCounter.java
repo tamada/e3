@@ -32,6 +32,18 @@ public interface EntropyCounter extends Iterable<Integer>{
     int getSize();
 
     /**
+     * returns line number in given opcode length.
+     * @param current opcode size
+     * @return line number
+     */
+    int getLine(int opcodeSize);
+
+    /**
+     * update current line.
+     */
+    void visitLine(int line);
+
+    /**
      * output summary.
      */
     void summarize();
