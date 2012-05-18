@@ -1,4 +1,4 @@
-package jp.cafebabe.e3.exec;
+package jp.cafebabe.e3.exec.result;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -10,13 +10,18 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.ServiceLoader;
 
+import jp.cafebabe.e3.exec.EntropyCounter;
+import jp.cafebabe.e3.exec.MethodEntropyCounter;
+import jp.cafebabe.e3.exec.OpcodeManager;
+import jp.cafebabe.e3.exec.KolmogorovCalculator;
+
 public class ResultSet implements Serializable{
     private List<ResultOpcode> opcodeList = new ArrayList<ResultOpcode>();
     private Map<Integer, OpcodeFrequency> opcodeFreq = new TreeMap<Integer, OpcodeFrequency>();
     private byte[] data;
     private double entropy = -1d;
 
-    ResultSet(List<EntropyCounter> list){
+    public ResultSet(List<EntropyCounter> list){
         OpcodeManager manager = OpcodeManager.getInstance();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 

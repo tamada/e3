@@ -1,6 +1,8 @@
-package jp.cafebabe.e3.exec;
+package jp.cafebabe.e3.exec.result;
 
 import java.io.IOException;
+
+import jp.cafebabe.e3.exec.KolmogorovCalculator;
 
 public class KolmogorovComplexity{
     private KolmogorovCalculator calculator;

@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.ServiceLoader;
 
+import jp.cafebabe.e3.exec.result.ResultSet;
+
 /**
  * Management class for {@link EntropyCounter <code>EntropyCounter</code>}.
  * @author Haruaki Tamada
