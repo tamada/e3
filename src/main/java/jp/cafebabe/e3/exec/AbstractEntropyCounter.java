@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
+import jp.cafebabe.e3.exec.result.OpcodeFrequency;
 
 /**
  * Subclass of this class must implements {@link #summarize
@@ -15,25 +18,58 @@ import java.util.Map;
 public class AbstractEntropyCounter implements EntropyCounter{
     private List<Integer> opcodes = new ArrayList<Integer>();
     private Map<Integer, Integer> lineNumberMap = new HashMap<Integer, Integer>();
+    private double entropy = -1;
 
     /**
      * returns opcodes sequence in this object.
      * @return iterator object of opcode sequence.
      */
-    public final Iterator<Integer> iterator(){
+    public Iterator<Integer> opcodes(){
         return opcodes.iterator();
     }
 
-    public final int getSize(){
+    public Iterator<OpcodeFrequency> frequencies(){
+        Map<Integer, OpcodeFrequency> freqMap = new TreeMap<Integer, OpcodeFrequency>();
+        OpcodeManager manager = OpcodeManager.getInstance();
+        for(Integer opcode: opcodes){
+            OpcodeFrequency freq = freqMap.get(opcode);
+            if(freq == null){
+                freq = new OpcodeFrequency(opcode, manager.getName(opcode));
+                freqMap.put(opcode, freq);
+            }
+            freq.increment();
+        }
+        return freqMap.values().iterator();
+    }
+
+    public final double getEntropy(){
+        if(entropy < 0){
+            entropy = calculateEntropy();
+        }
+        return entropy;
+    }
+
+    private double calculateEntropy(){
+        // 出現した命令を基にエントロピーを計算する．
+        double entropy = 0d;
+        double log2 = Math.log(2);
+        int total = getSize();
+    
+        for(Iterator<OpcodeFrequency> i = frequencies(); i.hasNext(); ){
+            OpcodeFrequency freq = i.next();
+            double probability = (double)freq.getFrequency() / total;
+            entropy += probability * (Math.log(probability) / log2);
+        }
+        entropy = -1 * entropy;
+        return entropy;
+    }
+
+    public int getSize(){
         return opcodes.size();
     }
 
     @Override
-    public void summarize(){
-    }
-
-    @Override
-    public final int getLine(int opcodeSize){
+    public int getLine(int opcodeSize){
         Integer value = lineNumberMap.get(opcodeSize);
         int v = -1;
         if(value != null){

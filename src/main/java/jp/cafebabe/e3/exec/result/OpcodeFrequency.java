@@ -3,21 +3,23 @@ package jp.cafebabe.e3.exec.result;
 import java.io.Serializable;
 
 public class OpcodeFrequency implements Serializable{
+    private static final long serialVersionUID = -1673197729533037597L;
+
     private int opcode;
     private String name;
     private int freq;
 
-    OpcodeFrequency(int opcode, String name, int freq){
+    public OpcodeFrequency(int opcode, String name, int freq){
         this.opcode = opcode;
         this.name = name;
         this.freq = freq;
     }
 
-    OpcodeFrequency(int opcode, String name){
+    public OpcodeFrequency(int opcode, String name){
         this(opcode, name, 0);
     }
 
-    void increment(){
+    public void increment(){
         freq++;
     }
 

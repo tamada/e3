@@ -3,6 +3,8 @@ package jp.cafebabe.e3.exec.result;
 import java.io.Serializable;
 
 public class ResultOpcode implements Serializable{
+    private static final long serialVersionUID = -2706797011570020246L;
+
     private String className;
     private String methodName;
     private int opcode;

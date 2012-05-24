@@ -3,14 +3,24 @@ package jp.cafebabe.e3.exec;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import jp.cafebabe.e3.exec.result.OpcodeFrequency;
+
 /**
  * empty {@link MethodEntropyCounter <code>MethodEntropyCounter</code>}.
  * @see MethodEntropyCounter
  * @author Haruaki Tamada
  */
 public class EmptyMethodEntropyCounter implements EntropyCounter{
-    public Iterator<Integer> iterator(){
+    public Iterator<Integer> opcodes(){
         return new ArrayList<Integer>().iterator();
+    }
+
+    public Iterator<OpcodeFrequency> frequencies(){
+        return new ArrayList<OpcodeFrequency>().iterator();
+    }
+
+    public double getEntropy(){
+        return 0d;
     }
 
     @Override
@@ -25,9 +35,6 @@ public class EmptyMethodEntropyCounter implements EntropyCounter{
 
     @Override
     public void visitLine(int line){ }
-
-    @Override
-    public void summarize(){ }
 
     @Override
     public void aaload(){ }

@@ -2,6 +2,8 @@ package jp.cafebabe.e3.exec;
 
 import java.util.Iterator;
 
+import jp.cafebabe.e3.exec.result.OpcodeFrequency;
+
 /**
  * <p>
  * Counting executed opcodes interface at runtime for calculating
@@ -17,12 +19,18 @@ import java.util.Iterator;
  * </ul>
  * @author Haruaki Tamada
  */
-public interface EntropyCounter extends Iterable<Integer>{
+public interface EntropyCounter{
     /**
      * returns opcodes sequence in this object.
      * @return opcodes sequence.
      */
-    Iterator<Integer> iterator();
+    Iterator<Integer> opcodes();
+
+    /**
+     * returns frequency of opcodes in this object ordered by opcode.
+     * @return opcode frequency sequence.
+     */
+    Iterator<OpcodeFrequency> frequencies();
 
     /**
      * returns length of opcode sequence.  Return value of this method
@@ -30,6 +38,12 @@ public interface EntropyCounter extends Iterable<Integer>{
      * @return length of opcode sequence.
      */
     int getSize();
+
+    /**
+     * Returns entropy.
+     * @return
+     */
+    double getEntropy();
 
     /**
      * returns line number in given opcode length.
@@ -42,11 +56,6 @@ public interface EntropyCounter extends Iterable<Integer>{
      * update current line.
      */
     void visitLine(int line);
-
-    /**
-     * output summary.
-     */
-    void summarize();
 
     /**
      * This method is called at executed AALOAD instruction.

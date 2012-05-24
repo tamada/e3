@@ -3,45 +3,51 @@ package jp.cafebabe.e3.exec.result;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.ServiceLoader;
 
 import jp.cafebabe.e3.exec.EntropyCounter;
-import jp.cafebabe.e3.exec.MethodEntropyCounter;
-import jp.cafebabe.e3.exec.OpcodeManager;
 import jp.cafebabe.e3.exec.KolmogorovCalculator;
+import jp.cafebabe.e3.exec.MethodEntropyCounter;
+import jp.cafebabe.e3.exec.MultipleEntropyCounter;
+import jp.cafebabe.e3.exec.OpcodeManager;
 
 public class ResultSet implements Serializable{
-    private List<ResultOpcode> opcodeList = new ArrayList<ResultOpcode>();
-    private Map<Integer, OpcodeFrequency> opcodeFreq = new TreeMap<Integer, OpcodeFrequency>();
+    private static final long serialVersionUID = 8890087986391605380L;
+
+    private MultipleEntropyCounter counter;
     private byte[] data;
-    private double entropy = -1d;
 
     public ResultSet(List<EntropyCounter> list){
-        OpcodeManager manager = OpcodeManager.getInstance();
+        counter = new MultipleEntropyCounter(list.toArray(new EntropyCounter[list.size()]));
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        for(EntropyCounter mec: list){
-            String className = ((MethodEntropyCounter)mec).getClassName();
-            String methodName = ((MethodEntropyCounter)mec).getMethodName();
+        for(Iterator<Integer> i = counter.opcodes(); i.hasNext(); ){
+            Integer opcode = i.next();
+            out.write(opcode);
+        }
 
+        this.data = out.toByteArray();
+    }
+
+    public void print(PrintWriter out){
+        OpcodeManager manager = OpcodeManager.getInstance();
+        out.println(
+            "########### execution trace (class,method,opcode,name,line) #############"
+        );
+        for(EntropyCounter ec: counter){
+            MethodEntropyCounter mec = (MethodEntropyCounter)ec;
+            String className = mec.getClassName();
+            String methodName = mec.getMethodName();
             int count = 0;
             int line = mec.getLine(count);
-            for(Integer opcode: mec){
+            for(Iterator<Integer> i = mec.opcodes(); i.hasNext(); ){
+                Integer opcode = i.next();
                 String name = manager.getName(opcode);
-                opcodeList.add(new ResultOpcode(className, methodName, opcode, name, line));
+                out.println(new ResultOpcode(className, methodName, opcode, name, line));
 
-                OpcodeFrequency freq = opcodeFreq.get(opcode);
-                if(freq == null){
-                    freq = new OpcodeFrequency(opcode, name);
-                    opcodeFreq.put(opcode, freq);
-                }
-                freq.increment();
-                out.write(opcode);
                 count++;
                 int newLine = mec.getLine(count);
                 if(newLine != -1){
@@ -49,27 +55,21 @@ public class ResultSet implements Serializable{
                 }
             }
         }
-
-        this.data = out.toByteArray();
-    }
-
-    public void print(PrintWriter out){
-        out.println(
-            "########### execution trace (class,method,opcode,name,line) #############"
-        );
-        for(ResultOpcode ro: opcodeList){
-            out.println(ro);
-        }
         out.println(
             "################ frequency of trace (opcode,name,count) #################"
         );
-        for(OpcodeFrequency freq: opcodeFreq.values()){
+        for(Iterator<OpcodeFrequency> i = counter.frequencies(); i.hasNext(); ){
+            OpcodeFrequency freq = i.next();
             out.println(freq);
         }
         out.println(
-            "################################ entropy ################################"
+            "##################### entropy (class,method,entropy) #####################"
         );
-        out.println(getEntropy());
+        for(EntropyCounter ec: counter){
+            MethodEntropyCounter mec = (MethodEntropyCounter)ec;
+            out.printf("%s,%s,%g%n", mec.getClassName(), mec.getMethodName(), mec.getEntropy());
+        }
+        out.printf("<whole>,<entire>,%g%n", getEntropy());
         out.println(
             "########## kolmogorov complexity (algorithm,after,before,rate) ##########"
         );
@@ -104,39 +104,10 @@ public class ResultSet implements Serializable{
     }
 
     public int getExecutionTraceLength(){
-        return opcodeList.size();
-    }
-
-    public Iterator<ResultOpcode> executionTrace(){
-        return opcodeList.iterator();
-    }
-
-    public int getFrequencySize(){
-        return opcodeFreq.size();
-    }
-
-    public Iterator<OpcodeFrequency> frequencies(){
-        return opcodeFreq.values().iterator();
+        return counter.getSize();
     }
 
     public synchronized double getEntropy(){
-        if(entropy < 0){
-            entropy = calculateEntropy();
-        }
-        return entropy;
-    }
-
-    private double calculateEntropy(){
-        // 出現した命令を基にエントロピーを計算する．
-        double entropy = 0d;
-        double log2 = Math.log(2);
-        int total = getExecutionTraceLength();
-
-        for(OpcodeFrequency freq: opcodeFreq.values()){
-            double probability = (double)freq.getFrequency() / total;
-            entropy += probability * (Math.log(probability) / log2);
-        }
-        entropy = -1 * entropy;
-        return entropy;
+        return counter.getEntropy();
     }
 }

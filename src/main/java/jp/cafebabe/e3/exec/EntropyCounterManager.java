@@ -1,13 +1,8 @@
 package jp.cafebabe.e3.exec;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.ServiceLoader;
 
 import jp.cafebabe.e3.exec.result.ResultSet;
 
@@ -16,7 +11,6 @@ import jp.cafebabe.e3.exec.result.ResultSet;
  * @author Haruaki Tamada
  */
 public final class EntropyCounterManager{
-    private static final int BYTE = 0xff;
     private static final EntropyCounterManager MANAGER = new EntropyCounterManager();
     private EntropyCounter currentMethod = null;
     private List<EntropyCounter> stack = new ArrayList<EntropyCounter>();
