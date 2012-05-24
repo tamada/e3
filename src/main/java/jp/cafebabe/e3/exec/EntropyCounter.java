@@ -1,5 +1,6 @@
 package jp.cafebabe.e3.exec;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import jp.cafebabe.e3.exec.result.OpcodeFrequency;
@@ -9,17 +10,18 @@ import jp.cafebabe.e3.exec.result.OpcodeFrequency;
  * Counting executed opcodes interface at runtime for calculating
  * entropy of the program.
  * </p><p>
- * This interface has many methods. However, except 3 methods are for
- * counting instruction.  The 3 methods are as follows.
+ * This interface has many methods. However, except 4 methods are for
+ * counting instruction.  The 4 methods are as follows.
  * </p>
  * <ul>
- *   <li>{@link #iterator <code>iterator</code>}</li>
+ *   <li>{@link #opcodes <code>opcodes</code>}</li>
+ *   <li>{@link #frequencies <code>frequencies</code>}</li>
  *   <li>{@link #getSize <code>getSize</code>}</li>
- *   <li>{@link #summarize <code>summarize</code>}</li>
+ *   <li>{@link #getEntropy <code>getEntropy</code>}</li>
  * </ul>
  * @author Haruaki Tamada
  */
-public interface EntropyCounter{
+public interface EntropyCounter extends Serializable{
     /**
      * returns opcodes sequence in this object.
      * @return opcodes sequence.
@@ -41,13 +43,13 @@ public interface EntropyCounter{
 
     /**
      * Returns entropy.
-     * @return
+     * @return calculated entropy.
      */
     double getEntropy();
 
     /**
      * returns line number in given opcode length.
-     * @param current opcode size
+     * @param opcodeSize current opcode size
      * @return line number
      */
     int getLine(int opcodeSize);

@@ -10,16 +10,21 @@ public class KolmogorovComplexity{
     private int compressedLength;
     private double rate = -1;
 
-    KolmogorovComplexity(KolmogorovCalculator calculator, byte[] data){
+    /**
+     * Constructor.
+     * @param calculator implementation class of KolmogorovCalculator class.
+     * @param initData is used for argument of {@link
+     * KolmogorovCalculator#compress
+     * <code>KolmogorovCalculator.compress</code>} method.
+     */
+    KolmogorovComplexity(KolmogorovCalculator calculator, byte[] initData){
         this.calculator = calculator;
-        this.data = data;
+        data = new byte[initData.length];
+        System.arraycopy(initData, 0, data, 0, initData.length);
     }
 
     /**
      * returns the value of kolmogorov complexity with certain compress algorithm.
-     * @param data is used for argument of {@link
-     * KolmogorovCalculator#compress
-     * <code>KolmogorovCalculator.compress</code>} method.
      * @return calculated kolmogorov complexity.
      */
     public double getComplexity(){

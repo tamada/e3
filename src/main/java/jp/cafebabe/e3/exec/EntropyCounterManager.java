@@ -1,6 +1,8 @@
 package jp.cafebabe.e3.exec;
 
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,9 +67,6 @@ public final class EntropyCounterManager{
         if(stack.size() > 0){
             currentMethod = stack.get(stack.size() - 1);
         }
-        else{
-            currentMethod = new EmptyMethodEntropyCounter();
-        }
     }
 
     public synchronized ResultSet getResultSet(){
@@ -76,7 +75,10 @@ public final class EntropyCounterManager{
 
     public synchronized void summarize(){
         ResultSet rs = getResultSet();
-        rs.print(new PrintWriter(System.out));
+        try{
+            rs.print(new PrintWriter(new OutputStreamWriter(System.out, "utf-8")));
+        } catch(UnsupportedEncodingException e){
+        }
     }
 
     private static EntropyCounter getCounter(){

@@ -14,10 +14,10 @@
 ください．配布ファイルのトップディレクトリで実行する場合のコマンドです
 (src, target, pom.xml, READMEの4つのファイル，ディレクトリが存在するディ
 レクトリ)．他のディレクトリで実行する場合は，
-target/e3-1.1.jar を適切なパスに修正して実行して下さい．
+target/e3-1.2.jar を適切なパスに修正して実行して下さい．
 
 ----
-$ java -javaagent:target/e3-1.1.jar 
+$ java -javaagent:target/e3-1.2.jar 
        -classpath XXXXX
        YYYYY
 ----
@@ -30,7 +30,7 @@ $ java -javaagent:target/e3-1.1.jar
 $ java -classpath XXXXX YYYYY
 ----
 
- -jar オプションであっても同様に -javaagent:target/e3-1.1.jar とjavaコ
+ -jar オプションであっても同様に -javaagent:target/e3-1.2.jar とjavaコ
 マンドのオプションを追加指定して計測できるようになります．
 
 * {Transformation Targets}
@@ -56,7 +56,7 @@ filter.csvを指定していますが，実際には適切なファイルを指�
 での指定でもサポートしています．
 
 ----
-$ java -javaagent:target/e3-1.1.jar=filter:filter.csv
+$ java -javaagent:target/e3-1.2.jar=filter:filter.csv
        -classpath XXXXX
        YYYYY
 ----
@@ -64,27 +64,33 @@ $ java -javaagent:target/e3-1.1.jar=filter:filter.csv
 {Statically Transformation}
 
  変換後のファイルを調べたい場合は，この方法で起動して，静的に変換してく
-ださい．以下のように，javaコマンドの-jarオプションに渡せば静的に変換さ
-れます．
+ださい．以下のように，javaコマンドの-jarオプションに渡し，-t オプション
+もしくは --transform オプションを指定すれば変換後のプログラムが入手でき
+ます．ただし，変換後のプログラムを実行するにはe3の当該バージョンが必要
+になります．
 
 ----
-$ java -jar e3-1.1.jar [OPTIONS] <TARGETS...>
-
-OPTIONS
-  -d, --dest <dest>:     specify destination.  Default is current directory.
-  -f, --filter <filter>: specify transformation filter.  Default filter is prescripted.
-  -h, --help:            show this message.
-
-TARGETS
-  only accept Java class files.
+$ java -jar e3-1.2.jar -t YYYYY
 ----
 
- -d は変換後のクラスファイルの出力先を表します．指定しなかった場合はカ
-レントディレクトリ（.）が指定されたことになります．変換後のプログラムを
-実行するには，このjarファイル(e3-1.1.jar)にクラスパスを通さなくてはいけ
-ません．
+ 出力先を指定する場合は -d もしくは --dest オプションを使用してくださ
+い．指定したディレクトリに変換後のクラスファイルが出力されます．指定し
+たディレクトリが存在しなかった場合は，自動的に作成します．-d オプション
+で出力先を指定しなかった場合はカレントディレクトリ（.）が指定されたこと
+になります．
 
-* {Transformation Targets}
+{Statically Analysis}
+
+ 上記の実行方法はプログラムを動的に解析します．静的に解析したい場合は
+java コマンドの -jar オプションに渡して解析したいクラスファイルを指定し
+てください．クラスはいくつでも指定できますが，クラスごとにエントロピー
+が計算されます．複数クラスを対象にした出力は行えません．
+
+----
+$ java -jar e3-1.2.jar YYYYY
+----
+
+{Transformation Targets}
 
  変換対象は src/main/java/entropy/DefaultTransfomFilter.java で制御され
 ています．java, javax, sun, sunw, org.apache などのパッケージで始まるク
@@ -100,3 +106,26 @@ TARGETS
  なお，パッケージ階層の区切りは，Javaプログラムの場合ピリオド(.)ですが，
 バイトコードの場合スラッシュ(/)です．この設定ファイルでは，どちらの文字
 での指定でもサポートしています．
+
+{Help}
+
+----
+$ java -jar e3-1.2.jar -t [OPTIONS] <TARGETS...>
+java -jar e3-1.2.jar [OPTIONS] <TARGETS...>
+
+OPTIONS
+  -c, --calculate:       specify to calculate entropy of given Java class
+                         files statically.  In this option, ``dest'' option
+                         is ignored.  This option is default.
+  -t, --transform:       specify to transform Java class files for counting
+                         entropy.  If this option is specified, ``calculate''
+                         option is ignored.
+  -d, --dest <dest>:     specify destination.  Default is current directory.
+  -f, --filter <filter>: specify filter for processing targets.
+                         Default filter is prescripted.
+  -h, --help:            show this message.
+
+TARGETS
+  Accept Java class files and jar files.
+----
+

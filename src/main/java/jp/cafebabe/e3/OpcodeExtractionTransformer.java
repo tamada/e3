@@ -58,10 +58,12 @@ public final class OpcodeExtractionTransformer implements ClassFileTransformer{
     public void output(final String dest, String className, final byte[] data){
         try{
             File file = new File(dest, className + ".class");
-            file.getParentFile().mkdirs();
-            FileOutputStream out = new FileOutputStream(file);
-            out.write(data);
-            out.close();
+            boolean flag = file.getParentFile().mkdirs();
+            if(flag){
+                FileOutputStream out = new FileOutputStream(file);
+                out.write(data);
+                out.close();
+            }
         }
         catch(IOException e){
             throw new InternalError(e.getMessage());

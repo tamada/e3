@@ -1,5 +1,6 @@
 package jp.cafebabe.e3.exec;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -7,7 +8,9 @@ import java.util.List;
 import jp.cafebabe.e3.MultipleIterator;
 import jp.cafebabe.e3.exec.result.OpcodeFrequency;
 
-public class MultipleEntropyCounter extends AbstractEntropyCounter implements Iterable<EntropyCounter>{
+public class MultipleEntropyCounter extends EmptyEntropyCounter implements Iterable<EntropyCounter>, Serializable{
+    private static final long serialVersionUID = 1217257625796127665L;
+
     private List<EntropyCounter> counters = new ArrayList<EntropyCounter>();
     private int totalSize = -1;
 

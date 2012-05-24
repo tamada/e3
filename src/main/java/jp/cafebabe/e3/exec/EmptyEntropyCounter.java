@@ -10,7 +10,9 @@ import jp.cafebabe.e3.exec.result.OpcodeFrequency;
  * @see MethodEntropyCounter
  * @author Haruaki Tamada
  */
-public class EmptyMethodEntropyCounter implements EntropyCounter{
+public class EmptyEntropyCounter implements EntropyCounter{
+    private static final long serialVersionUID = -7880172480418927135L;
+
     public Iterator<Integer> opcodes(){
         return new ArrayList<Integer>().iterator();
     }

@@ -1,11 +1,13 @@
 package jp.cafebabe.e3.exec;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>
@@ -108,13 +110,15 @@ public final class OpcodeManager{
     }
 
     static{
+        Logger logger = Logger.getLogger(OpcodeManager.class.getName());
         BufferedReader in = null;
+        Map<String, Opcode> opcodeMap = new HashMap<String, Opcode>();
+        INSTANCE = new OpcodeManager(opcodeMap);
         try{
             URL url = OpcodeManager.class.getResource(
                 "/resources/bytecode.def"
             );
             String line;
-            Map<String, Opcode> opcodeMap = new HashMap<String, Opcode>();
 
             in = new BufferedReader(
                 new InputStreamReader(url.openStream(), "utf-8")
@@ -126,10 +130,9 @@ public final class OpcodeManager{
                     new Opcode(Integer.parseInt(data[0]), data[1], data[2])
                 );
             }
-            INSTANCE = new OpcodeManager(opcodeMap);
         }
         catch(IOException e){
-            throw new InternalError(e.getMessage());
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
         finally{
             if(in != null){
@@ -137,7 +140,7 @@ public final class OpcodeManager{
                     in.close();
                 }
                 catch(IOException e){
-                    throw new InternalError(e.getMessage());
+                    logger.log(Level.WARNING, e.getMessage(), e);
                 }
             }
         }

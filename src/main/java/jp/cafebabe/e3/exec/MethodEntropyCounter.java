@@ -4,7 +4,9 @@ package jp.cafebabe.e3.exec;
  * Collecting opcodes sequence per each method.
  * @author Haruaki Tamada
  */
-public class MethodEntropyCounter extends AbstractEntropyCounter{
+public class MethodEntropyCounter extends DefaultEntropyCounter{
+    private static final long serialVersionUID = -8268580315414707344L;
+
     private final String className;
     private final String methodName;
 

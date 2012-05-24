@@ -10,12 +10,12 @@ import java.util.TreeMap;
 import jp.cafebabe.e3.exec.result.OpcodeFrequency;
 
 /**
- * Subclass of this class must implements {@link #summarize
- * <code>summarize</code>} method for output result.
  *
  * @author Haruaki Tamada
  */
-public class AbstractEntropyCounter implements EntropyCounter{
+public class DefaultEntropyCounter implements EntropyCounter{
+    private static final long serialVersionUID = -7715994234536111750L;
+
     private List<Integer> opcodes = new ArrayList<Integer>();
     private Map<Integer, Integer> lineNumberMap = new HashMap<Integer, Integer>();
     private double entropy = -1;

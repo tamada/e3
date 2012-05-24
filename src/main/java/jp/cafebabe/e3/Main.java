@@ -4,12 +4,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jp.cafebabe.e3.exec.result.ResultSet;
 
@@ -56,7 +60,7 @@ public class Main{
                 }
             }
             catch(IOException e){
-                e.printStackTrace();
+                Logger.getLogger(getClass().getName()).log(Level.WARNING, e.getMessage(), e);
             }
         }
     }
@@ -99,9 +103,9 @@ public class Main{
         }
     }
 
-    private void calculate(String className, byte[] data){
+    private void calculate(String className, byte[] data) throws UnsupportedEncodingException{
         ResultSet rs = StaticallyOpcodeExtractVisitor.parse(data);
-        rs.print(new PrintWriter(System.out));
+        rs.print(new PrintWriter(new OutputStreamWriter(System.out, "utf-8")));
     }
 
     private void transform(final OpcodeExtractionTransformer transformer, 
@@ -128,12 +132,7 @@ public class Main{
         }
         finally{
             if(in != null){
-                try{
-                    in.close();
-                }
-                catch(IOException e){
-                    throw new InternalError(e.getMessage());
-                }
+                in.close();
             }
         }
     }
@@ -153,12 +152,7 @@ public class Main{
         }
         finally{
             if(in != null){
-                try{
-                    in.close();
-                }
-                catch(IOException e){
-                    throw new InternalError(e.getMessage());
-                }
+                in.close();
             }
         }
     }
