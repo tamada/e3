@@ -13,6 +13,7 @@ public class MultipleEntropyCounter extends EmptyEntropyCounter implements Itera
 
     private List<EntropyCounter> counters = new ArrayList<EntropyCounter>();
     private int totalSize = -1;
+    private double entropy = -1;
 
     public MultipleEntropyCounter(EntropyCounter counter){
         this(new EntropyCounter[] { counter, });
@@ -56,5 +57,27 @@ public class MultipleEntropyCounter extends EmptyEntropyCounter implements Itera
             this.totalSize = size;
         }
         return totalSize;
+    }
+
+    public final double getEntropy(){
+        if(entropy < 0){
+            entropy = calculateEntropy();
+        }
+        return entropy;
+    }
+
+    private double calculateEntropy(){
+        // 出現した命令を基にエントロピーを計算する．
+        double entropy = 0d;
+        double log2 = Math.log(2);
+        int total = getSize();
+    
+        for(Iterator<OpcodeFrequency> i = frequencies(); i.hasNext(); ){
+            OpcodeFrequency freq = i.next();
+            double probability = (double)freq.getFrequency() / total;
+            entropy += probability * (Math.log(probability) / log2);
+        }
+        entropy = -1 * entropy;
+        return entropy;
     }
 }

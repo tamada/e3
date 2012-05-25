@@ -15,6 +15,7 @@ import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jp.cafebabe.e3.exec.result.MultipleResultSet;
 import jp.cafebabe.e3.exec.result.ResultSet;
 
 /**
@@ -36,6 +37,7 @@ public class Main{
     private String dest = ".";
     private String filterFile = null;
     private Operation operation = null;
+    private MultipleResultSet mrs;
 
     /**
      * Constructor.
@@ -63,6 +65,9 @@ public class Main{
                 Logger.getLogger(getClass().getName()).log(Level.WARNING, e.getMessage(), e);
             }
         }
+        if(operation == Operation.CALCULATE){
+            mrs.print(new PrintWriter(new OutputStreamWriter(System.out, "utf-8")));
+        }
     }
 
     private void performJar(final OpcodeExtractionTransformer transformer,
@@ -86,8 +91,8 @@ public class Main{
     }
 
     /**
-     * performes transformation.
-     * @param file transformation target class.
+     * performes transformation/calculation.
+     * @param file byte code data of target class.
      * @throws IOException I/O error.
      */
     private void perform(final OpcodeExtractionTransformer transformer,
@@ -104,8 +109,11 @@ public class Main{
     }
 
     private void calculate(String className, byte[] data) throws UnsupportedEncodingException{
+        if(mrs == null){
+            mrs = new MultipleResultSet();
+        }
         ResultSet rs = StaticallyOpcodeExtractVisitor.parse(data);
-        rs.print(new PrintWriter(new OutputStreamWriter(System.out, "utf-8")));
+        mrs.add(rs);
     }
 
     private void transform(final OpcodeExtractionTransformer transformer, 

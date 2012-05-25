@@ -12,4 +12,9 @@
 
  * <When I run Swing program with e3, then the application throws NoClassDefFoundError>
 
-   エージェントクラスはシステムクラスローダによりロードされます．一方，Swingライブラリはブートストラップクラスローダによりロードされます．
+   エージェントクラスはシステムクラスローダによりロードされます．一
+   方，Swingライブラリはブートストラップクラスローダによりロードされま
+   す．そのクラスローダの違いからか，javaagentによる起動におい
+   て，NoClassDefFoundError が発生します．プログラムを静的に変換すると
+   このエラーは起こりません．そのため，Swingを利用したアプリケーション
+   の動的解析には，静的変換を利用してください．

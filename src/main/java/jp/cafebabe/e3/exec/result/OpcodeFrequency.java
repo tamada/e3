@@ -23,6 +23,10 @@ public class OpcodeFrequency implements Serializable{
         freq++;
     }
 
+    public void increment(int operand){
+        freq += operand;
+    }
+
     public int getOpcode(){
         return opcode;
     }

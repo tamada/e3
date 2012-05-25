@@ -112,8 +112,8 @@ HelloWorld,main,177,return,4
 178,getstatic,1
 182,invokevirtual,1
 ##################### entropy (class,method,entropy) #####################
-HelloWorld,main,2.00000
-<whole>,<entire>,2.00000
+HelloWorld,main,2.0
+<whole-sequence>,<entire>,2.0
 ########## kolmogorov complexity (algorithm,after,before,rate) ##########
 deflate,12,4,3.000000
 ----
@@ -131,7 +131,9 @@ deflate,12,4,3.000000
 
  3つ目の区画は実行頻度が出力されます．opcode の番号順に opcode，それに
 対応する名前，実行された回数が１行で出力されます．ここに出力される行数
-が，当該プログラムで使用されている命令一覧になります．
+が，当該プログラムで使用されている命令一覧になります．クラス名が
+<whole-sequence>となっている行は，execution trace区画に表示されている全
+てのシーケンスを基に計算したエントロピーです．
 
  4つ目の区画は以下の式で表される以下の計算式に基づいて，平均情報量が出
 力されます．メソッドごとの実行系列をもとにエントロピーが計算され，最後

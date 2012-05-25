@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.cafebabe.e3.exec.result.DefaultResultSet;
 import jp.cafebabe.e3.exec.result.ResultSet;
 
 /**
@@ -70,7 +71,7 @@ public final class EntropyCounterManager{
     }
 
     public synchronized ResultSet getResultSet(){
-        return new ResultSet(executionList);
+        return new DefaultResultSet(executionList);
     }
 
     public synchronized void summarize(){

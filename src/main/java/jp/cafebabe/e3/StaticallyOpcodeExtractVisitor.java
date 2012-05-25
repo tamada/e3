@@ -5,6 +5,7 @@ import java.util.List;
 
 import jp.cafebabe.e3.exec.EntropyCounter;
 import jp.cafebabe.e3.exec.MethodEntropyCounter;
+import jp.cafebabe.e3.exec.result.DefaultResultSet;
 import jp.cafebabe.e3.exec.result.ResultSet;
 
 import org.objectweb.asm.ClassReader;
@@ -32,7 +33,7 @@ public class StaticallyOpcodeExtractVisitor extends ClassVisitor{
     }
 
     public ResultSet getResultSet(){
-        return new ResultSet(list);
+        return new DefaultResultSet(list);
     }
 
     @Override

@@ -15,6 +15,7 @@ import jp.cafebabe.e3.exec.result.OpcodeFrequency;
  */
 public class DefaultEntropyCounter implements EntropyCounter{
     private static final long serialVersionUID = -7715994234536111750L;
+    private static final double THRESHOLD = 1E-6;
 
     private List<Integer> opcodes = new ArrayList<Integer>();
     private Map<Integer, Integer> lineNumberMap = new HashMap<Integer, Integer>();
@@ -60,7 +61,9 @@ public class DefaultEntropyCounter implements EntropyCounter{
             double probability = (double)freq.getFrequency() / total;
             entropy += probability * (Math.log(probability) / log2);
         }
-        entropy = -1 * entropy;
+        if(Math.abs(entropy) > THRESHOLD){
+            entropy = -1 * entropy;
+        }
         return entropy;
     }
 
