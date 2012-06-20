@@ -1,11 +1,11 @@
 package jp.cafebabe.e3;
 
+import jp.cafebabe.e3.exec.OpcodeManager;
+
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-
-import jp.cafebabe.e3.exec.OpcodeManager;
 
 /**
  * This class is visitor class for ASM, and weaves the code to extract
@@ -158,13 +158,13 @@ public final class OpcodeExtractVisitor extends ClassVisitor{
         }
 
         @Override
-        public void visitIincInsn(final int opcode, final int increment){
+        public void visitIincInsn(final int var, final int increment){
             String methodName =
-                OpcodeManager.getInstance().getMethodName(opcode);
+                OpcodeManager.getInstance().getMethodName(Opcodes.IINC);
             super.visitMethodInsn(
                 Opcodes.INVOKESTATIC, ECMANAGER, methodName, METHOD_DESC
             );
-            super.visitIincInsn(opcode, increment);
+            super.visitIincInsn(var, increment);
         }
 
         @Override
