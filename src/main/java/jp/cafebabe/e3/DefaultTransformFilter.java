@@ -35,7 +35,8 @@ public final class DefaultTransformFilter implements TransformFilter {
      * otherwise false.
      */
     @Override
-    public boolean filter(final String className) {
+    public boolean isTarget(String className){
+        className = className.replace('.', '/');
         for(String packageName: targets){
             if(className.startsWith(packageName)){
                 return false;

@@ -13,5 +13,5 @@ public interface TransformFilter{
      * @return transformation flag. If true, given class will be
      * transformed. If false, given class is not transformed.
      */
-    boolean filter(String className);
+    boolean isTarget(String className);
 }

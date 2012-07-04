@@ -98,6 +98,6 @@ public class DefaultResultSet extends AbstractResultSet implements Serializable{
 
     public void printEntropies(PrintWriter out, boolean showHeader){
         super.printEntropies(out, showHeader);
-        out.println(new EntropyCounterWrapper(counter, WHOLE_SEQUENCE, ENTIRE_LABEL));
+        out.println(new EntropyCounterWrapper(counter, ALL_CLASSES, ALL_METHODS));
     }
 }

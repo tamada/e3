@@ -8,8 +8,8 @@ import jp.cafebabe.e3.exec.Entropy;
 
 public abstract class AbstractResultSet implements Serializable, ResultSet{
     private static final long serialVersionUID = 8890087986391605380L;
-    static final String ENTIRE_LABEL = "<entire>";
-    static final String WHOLE_SEQUENCE = "<whole-sequence>";
+    static final String ALL_METHODS = "<all-methods>";
+    static final String ALL_CLASSES = "<all-classes>";
 
     public AbstractResultSet(){
     }

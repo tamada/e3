@@ -5,6 +5,11 @@ import java.util.Iterator;
 
 import jp.cafebabe.e3.exec.Entropy;
 
+/**
+ * This class represents the result of execution.
+ * 
+ * @author Haruaki Tamada
+ */
 public interface ResultSet{
     Iterator<ResultOpcode> executionTraces();
 

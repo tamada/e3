@@ -23,6 +23,10 @@ public final class OpcodeExtractionTransformer implements ClassFileTransformer{
         this(new DefaultTransformFilter());
     }
 
+    public boolean isTarget(String name){
+        return filter.isTarget(name);
+    }
+
     public OpcodeExtractionTransformer(TransformFilter filter){
         this.filter = filter;
         if(filter == null){
@@ -42,7 +46,7 @@ public final class OpcodeExtractionTransformer implements ClassFileTransformer{
     }
 
     public byte[] transform(final String className, final byte[] originalData){
-        if(filter.filter(className)){
+        if(filter.isTarget(className)){
             ClassReader reader = new ClassReader(originalData);
             ClassWriter writer = new ClassWriter(
                 ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS

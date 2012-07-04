@@ -50,7 +50,7 @@ public final class CsvTransformFilter implements TransformFilter {
      * otherwise false.
      */
     @Override
-    public boolean filter(final String className) {
+    public boolean isTarget(final String className) {
         for(String packageName: targets){
             if(className.startsWith(packageName)){
                 return false;

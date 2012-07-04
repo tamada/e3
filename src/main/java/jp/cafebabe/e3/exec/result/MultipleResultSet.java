@@ -59,13 +59,13 @@ public class MultipleResultSet extends AbstractResultSet{
                 }
             }
             if(equals){
-                list.add(new EntropyCounterWrapper(((DefaultResultSet)rs).counter, className, ENTIRE_LABEL));
+                list.add(new EntropyCounterWrapper(((DefaultResultSet)rs).counter, className, ALL_METHODS));
             }
             eclist.add(((DefaultResultSet)rs).counter);
         }
         list.add(new EntropyCounterWrapper(
             new MultipleEntropyCounter(eclist.toArray(new EntropyCounter[eclist.size()])),
-            WHOLE_SEQUENCE, ENTIRE_LABEL
+            ALL_CLASSES, ALL_METHODS
         ));
         return list.iterator();
     }

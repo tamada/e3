@@ -12,6 +12,7 @@ public final class Premain{
 
     Premain(final String agentArgs, final Instrumentation inst) throws IOException{
         parseArguments(agentArgs);
+
         inst.addTransformer(new OpcodeExtractionTransformer(filter));
     }
 
