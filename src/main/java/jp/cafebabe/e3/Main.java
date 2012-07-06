@@ -1,23 +1,17 @@
 package jp.cafebabe.e3;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,69 +51,15 @@ public class Main{
         if(filterFile != null){
             filter = new CsvTransformFilter(filterFile);
         }
-        OpcodeExtractionTransformer transformer = new OpcodeExtractionTransformer(
-                filter);
+        OpcodeExtractionTransformer transformer = new OpcodeExtractionTransformer(filter);
 
         if(operation == Operation.EXECUTE){
-            executeArgument(arguments, transformer);
+            Launcher launcher = new Launcher(transformer, arguments);
+            launcher.perform();
         }
         else{
             performArguments(arguments, transformer);
         }
-    }
-
-    private void executeArgument(String[] args, OpcodeExtractionTransformer transformer){
-
-        try{
-            if(args[0].endsWith(".jar")){
-                executeJar(transformer, args);
-            }
-            else{
-                executeClass(transformer, args);
-            }
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    private void executeJar(OpcodeExtractionTransformer transformer, String[] args)
-            throws ClassNotFoundException, SecurityException,
-            NoSuchMethodException, IllegalArgumentException,
-            IllegalAccessException, InvocationTargetException, IOException{
-
-        File file = new File(args[0]);
-        URLClassLoader urlLoader = new URLClassLoader(new URL[] { file.toURI().toURL(), });
-        E3ClassLoader e3Loader = new E3ClassLoader(urlLoader, transformer);
-
-        JarFile jarfile = new JarFile(file);
-        Manifest manifest = jarfile.getManifest();
-
-        String mainClass = manifest.getMainAttributes().getValue("Main-Class");
-        Class<?> clazz = e3Loader.loadClass(mainClass);
-        Method method = clazz.getMethod("main", String[].class);
-        String[] arguments = shiftArgs(args);
-
-        method.invoke(null, new Object[] { arguments, });
-    }
-
-    private void executeClass(OpcodeExtractionTransformer transformer, String[] args)
-            throws ClassNotFoundException, SecurityException,
-            NoSuchMethodException, IllegalArgumentException,
-            IllegalAccessException, InvocationTargetException{
-        E3ClassLoader loader = new E3ClassLoader(transformer);
-        Class<?> clazz = loader.loadClass(args[0]);
-        Method method = clazz.getMethod("main", String[].class);
-        String[] arguments = shiftArgs(args);
-
-        method.invoke(null, new Object[] { arguments, });
-    }
-
-    private String[] shiftArgs(String[] originalArgs){
-        String[] args = new String[originalArgs.length - 1];
-        for(int i = 0; i < args.length; i++){
-            args[i] = originalArgs[i + 1];
-        }
-        return args;
     }
 
     private void performArguments(String[] arguments,
@@ -150,8 +90,9 @@ public class Main{
             JarEntry entry = e.nextElement();
             String name = entry.getName();
             if(name.endsWith(".class")){
-                String className = name.substring(0,
-                        name.length() - ".class".length()).replace('/', '.');
+                String className = name.substring(
+                    0, name.length() - ".class".length()
+                ).replace('/', '.');
                 byte[] original = getData(jar, entry);
 
                 if(operation == Operation.TRANSFORM){
