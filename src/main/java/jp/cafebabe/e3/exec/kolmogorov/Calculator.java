@@ -1,4 +1,4 @@
-package jp.cafebabe.e3.exec;
+package jp.cafebabe.e3.exec.kolmogorov;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
  * 
  * @author Haruaki Tamada
  */
-public interface KolmogorovCalculator{
+public interface Calculator{
     /**
      * Performs compression for calculating kolmogorov complexity.
      * @param data is original data for compression

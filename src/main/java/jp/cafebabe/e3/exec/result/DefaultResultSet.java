@@ -8,9 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import jp.cafebabe.e3.exec.kolmogorov.Calculator;
 import jp.cafebabe.e3.exec.Entropy;
 import jp.cafebabe.e3.exec.EntropyCounter;
-import jp.cafebabe.e3.exec.KolmogorovCalculator;
 import jp.cafebabe.e3.exec.MethodEntropyCounter;
 import jp.cafebabe.e3.exec.MultipleEntropyCounter;
 import jp.cafebabe.e3.exec.OpcodeManager;
@@ -75,8 +75,8 @@ public class DefaultResultSet extends AbstractResultSet implements Serializable{
 
     public Iterator<KolmogorovComplexity> kolmogorovComplexities(){
         return new Iterator<KolmogorovComplexity>(){
-            private Iterator<KolmogorovCalculator> iterator =
-                ServiceLoader.load(KolmogorovCalculator.class).iterator();
+            private Iterator<Calculator> iterator =
+                ServiceLoader.load(Calculator.class).iterator();
 
             @Override
             public boolean hasNext(){
@@ -85,7 +85,7 @@ public class DefaultResultSet extends AbstractResultSet implements Serializable{
 
             @Override
             public KolmogorovComplexity next(){
-                KolmogorovCalculator calculator = iterator.next();
+                Calculator calculator = iterator.next();
 
                 return new KolmogorovComplexity(calculator, data);
             }

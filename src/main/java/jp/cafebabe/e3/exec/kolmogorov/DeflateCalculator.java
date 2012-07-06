@@ -1,15 +1,15 @@
-package jp.cafebabe.e3.exec;
+package jp.cafebabe.e3.exec.kolmogorov;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.Deflater;
 
 /**
- * This class calculate kolmogorov complexity by deflate compression
+ * This class calculate kolgogorov complexity by deflate compression
  * algorithm.
  * @author Haruaki Tamada
  */
-public class DeflateKolmogorovCalculator extends AbstractKolmogorovCalculator{
+public class DeflateCalculator extends AbstractCalculator{
     private static final int BUFFER_SIZE = 256;
 
     /**

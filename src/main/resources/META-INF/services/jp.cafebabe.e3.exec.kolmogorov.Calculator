@@ -1,0 +1,5 @@
+jp.cafebabe.e3.exec.kolmogorov.DeflateCalculator
+jp.cafebabe.e3.exec.kolmogorov.Bzip2Calculator
+jp.cafebabe.e3.exec.kolmogorov.GzipCalculator
+jp.cafebabe.e3.exec.kolmogorov.Pack200Calculator
+jp.cafebabe.e3.exec.kolmogorov.XzCalculator

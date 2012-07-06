@@ -1,4 +1,4 @@
-package jp.cafebabe.e3.exec;
+package jp.cafebabe.e3.exec.kolmogorov;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import java.io.IOException;
  * {@link #isAvailable <code>isAvailable</code>} methods.
  * @author Haruaki Tamada
  */
-public abstract class AbstractKolmogorovCalculator implements KolmogorovCalculator{
+public abstract class AbstractCalculator implements Calculator{
     public abstract String getName();
 
     public abstract byte[] compress(byte[] data) throws IOException;
