@@ -97,9 +97,15 @@ public final class EntropyCounterManager{
      */
     public synchronized void summarize(){
         ResultSet rs = getResultSet();
+        PrintWriter out = null;
         try{
-            rs.print(new PrintWriter(new OutputStreamWriter(System.out, "utf-8")));
+            out = new PrintWriter(new OutputStreamWriter(System.out, "utf-8"));
+            rs.print(out);
         } catch(UnsupportedEncodingException e){
+        } finally{
+            if(out != null){
+                out.close();
+            }
         }
     }
 

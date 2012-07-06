@@ -11,10 +11,13 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Launcher{
     private String[] arguments;
     private OpcodeExtractionTransformer transformer;
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     public Launcher(OpcodeExtractionTransformer transformer, String[] arguments){
         this.arguments = new String[arguments.length];
@@ -34,7 +37,7 @@ public class Launcher{
                 executeClass();
             }
         } catch(Exception e){
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
 
@@ -45,12 +48,19 @@ public class Launcher{
         File file = new File(arguments[0]);
         ClassLoader e3Loader = createClassLoader(file.toURI().toURL());
 
-        JarFile jarfile = new JarFile(file);
-        Manifest manifest = jarfile.getManifest();
+        JarFile jarfile = null;
+        try{
+            jarfile = new JarFile(file);
+            Manifest manifest = jarfile.getManifest();
 
-        String mainClass = manifest.getMainAttributes().getValue("Main-Class");
+            String mainClass = manifest.getMainAttributes().getValue("Main-Class");
 
-        execute(e3Loader, mainClass, arguments);
+            execute(e3Loader, mainClass, arguments);
+        } finally{
+            if(jarfile != null){
+                jarfile.close();
+            }
+        }
     }
 
     private void executeClassFile() throws IOException, ClassNotFoundException,
@@ -61,11 +71,12 @@ public class Launcher{
         String subPath = className.replace('.', '/') + ".class";
 
         File classPath = null;
-        if(arguments[0].contains(subPath)){
-            String classPathString = arguments[0].substring(0,
-                    arguments[0].indexOf(subPath));
-            classPath = new File(classPathString);
-        }
+        assert arguments[0].contains(subPath);
+        String classPathString = arguments[0].substring(
+            0, arguments[0].indexOf(subPath)
+        );
+        classPath = new File(classPathString);
+
         ClassLoader loader = createClassLoader(classPath.toURI().toURL());
 
         execute(loader, className, arguments);
