@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jp.cafebabe.e3.exec.result.DefaultResultSet;
 import jp.cafebabe.e3.exec.result.ResultSet;
@@ -108,7 +110,11 @@ public final class EntropyCounterManager{
         try{
             out = new PrintWriter(new OutputStreamWriter(System.out, "utf-8"));
             rs.print(out);
+            out.flush();
         } catch(UnsupportedEncodingException e){
+            Logger.getLogger(getClass().getName()).log(
+                Level.WARNING, e.getMessage(), e
+            );
         } finally{
             if(out != null){
                 out.close();

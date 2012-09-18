@@ -57,7 +57,7 @@ public abstract class AbstractResultSet implements Serializable, ResultSet{
     public void printExecutionTraces(PrintWriter out, boolean showHeader){
         if(showHeader){
             out.println(
-                "########### execution trace (class,method,opcode,name,line) #############"
+                "######## execution trace (thread,class,method,opcode,name,line) ##########"
             );
         }
         for(Iterator<ResultOpcode> i = executionTraces(); i.hasNext(); ){
@@ -68,7 +68,7 @@ public abstract class AbstractResultSet implements Serializable, ResultSet{
     public void printFrequencyOfTrace(PrintWriter out, boolean showHeader){
         if(showHeader){
             out.println(
-                "################ frequency of trace (opcode,name,count) #################"
+                "################ frequency of trace (opcode,name,count) ##################"
             );
         }
         for(Iterator<OpcodeFrequency> i = frequencies(); i.hasNext(); ){
@@ -90,7 +90,7 @@ public abstract class AbstractResultSet implements Serializable, ResultSet{
     public void printKolmogorovComplexities(PrintWriter out, boolean showHeader){
         if(showHeader){
             out.println(
-                "########## kolmogorov complexity (algorithm,after,before,rate) ##########"
+                "########## kolmogorov complexity (algorithm,after,before,rate) ###########"
             );
         }
         for(Iterator<KolmogorovComplexity> i = kolmogorovComplexities(); i.hasNext(); ){

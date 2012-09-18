@@ -30,4 +30,11 @@ public class MethodEntropyCounter extends DefaultEntropyCounter{
     public final String getThreadName(){
         return threadName;
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(getThreadName()).append(",").append(getClassName());
+        sb.append(",").append(getMethodName());
+        return new String(sb);
+    }
 }

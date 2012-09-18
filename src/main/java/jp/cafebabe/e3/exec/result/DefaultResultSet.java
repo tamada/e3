@@ -23,6 +23,7 @@ public class DefaultResultSet extends AbstractResultSet implements Serializable{
 
     public DefaultResultSet(List<EntropyCounter> list){
         counter = new MultipleEntropyCounter(list.toArray(new EntropyCounter[list.size()]));
+        System.out.println("DefaultResultSet(" + list.size() + ")");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
