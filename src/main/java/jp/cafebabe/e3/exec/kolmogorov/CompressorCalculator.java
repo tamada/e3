@@ -16,8 +16,7 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
  * @author Haruaki Tamada
  */
 public abstract class CompressorCalculator extends AbstractCalculator{
-    private static final int BUFFER_SIZE = 256;
-    private static final Set TYPE_SET = new HashSet();
+    private static final Set<String> TYPE_SET = new HashSet<String>();
     static{
         TYPE_SET.add(CompressorStreamFactory.BZIP2);
         TYPE_SET.add(CompressorStreamFactory.GZIP);

@@ -72,7 +72,7 @@ public class StaticallyOpcodeExtractVisitor extends ClassVisitor{
                                           final String className,
                                           final String callee){
             super(Opcodes.ASM4, visitor);
-            counter = new MethodEntropyCounter(className, callee);
+            counter = new MethodEntropyCounter(className, callee, "<static>");
         }
 
         @Override

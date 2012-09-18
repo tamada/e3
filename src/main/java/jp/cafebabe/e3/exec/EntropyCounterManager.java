@@ -4,7 +4,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jp.cafebabe.e3.exec.result.DefaultResultSet;
 import jp.cafebabe.e3.exec.result.ResultSet;
@@ -27,8 +29,7 @@ import jp.cafebabe.e3.exec.result.ResultSet;
  */
 public final class EntropyCounterManager{
     private static final EntropyCounterManager MANAGER = new EntropyCounterManager();
-    private EntropyCounter currentMethod = null;
-    private List<EntropyCounter> stack = new ArrayList<EntropyCounter>();
+    private Map<String, List<EntropyCounter>> stackMap = new HashMap<String, List<EntropyCounter>>();
     private List<EntropyCounter> executionList = new ArrayList<EntropyCounter>();
 
     private EntropyCounterManager(){
@@ -62,12 +63,16 @@ public final class EntropyCounterManager{
      * @param className class name
      * @param methodName is the method name which is invoked now. 
      */
-    private void enterMethod(final String className, final String methodName){
-        MethodEntropyCounter method =
-            new MethodEntropyCounter(className, methodName);
+    private synchronized void enterMethod(final String className, final String methodName){
+        String threadName = Thread.currentThread().getName();
+        List<EntropyCounter> stack = stackMap.get(threadName);
+        if(stack == null){
+            stack = new ArrayList<EntropyCounter>();
+            stackMap.put(threadName, stack);
+        }
+        MethodEntropyCounter method = new MethodEntropyCounter(className, methodName, threadName);
         stack.add(method);
         executionList.add(method);
-        currentMethod = method;
     }
 
     /**
@@ -75,11 +80,13 @@ public final class EntropyCounterManager{
      * This method is called when IRETURN, LRETURN, FRETURN, DRETURN,
      * ARETURN, RETURN instruction were invoked.
      */
-    private void exitMethod(){
-        stack.remove(stack.size() - 1);
-        if(stack.size() > 0){
-            currentMethod = stack.get(stack.size() - 1);
+    private synchronized void exitMethod(){
+        String threadName = Thread.currentThread().getName();
+        List<EntropyCounter> stack = stackMap.get(threadName);
+        if(stack == null || stack.size() == 0){
+            throw new IllegalStateException();
         }
+        stack.remove(stack.size() - 1);
     }
 
     /**
@@ -119,7 +126,9 @@ public final class EntropyCounterManager{
     }
 
     private static EntropyCounter getCounter(){
-        return MANAGER.currentMethod;
+        String threadName = Thread.currentThread().getName();
+        List<EntropyCounter> stack = MANAGER.stackMap.get(threadName);
+        return stack.get(stack.size() - 1);
     }
 
     public static void visitLine(int line){

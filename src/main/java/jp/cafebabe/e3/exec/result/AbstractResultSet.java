@@ -10,6 +10,7 @@ public abstract class AbstractResultSet implements Serializable, ResultSet{
     private static final long serialVersionUID = 8890087986391605380L;
     static final String ALL_METHODS = "<all-methods>";
     static final String ALL_CLASSES = "<all-classes>";
+    static final String UNKNOWN_THREAD = "<unknown-thread>";
 
     public AbstractResultSet(){
     }

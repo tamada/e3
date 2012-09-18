@@ -5,5 +5,7 @@ public interface Entropy{
 
     String getMethodName();
 
+    String getThreadName();
+
     double getEntropy();
 }

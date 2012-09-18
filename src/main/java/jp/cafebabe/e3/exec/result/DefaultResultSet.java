@@ -61,7 +61,9 @@ public class DefaultResultSet extends AbstractResultSet implements Serializable{
             for(Iterator<Integer> i = mec.opcodes(); i.hasNext(); ){
                 Integer opcode = i.next();
                 String name = manager.getName(opcode);
-                list.add(new ResultOpcode(className, methodName, opcode, name, line));
+                list.add(new ResultOpcode(
+                    mec.getThreadName(), className, methodName, opcode, name, line
+                ));
 
                 count++;
                 int newLine = mec.getLine(count);
@@ -98,6 +100,6 @@ public class DefaultResultSet extends AbstractResultSet implements Serializable{
 
     public void printEntropies(PrintWriter out, boolean showHeader){
         super.printEntropies(out, showHeader);
-        out.println(new EntropyCounterWrapper(counter, ALL_CLASSES, ALL_METHODS));
+        out.println(new EntropyCounterWrapper(counter, ALL_CLASSES, ALL_METHODS, UNKNOWN_THREAD));
     }
 }

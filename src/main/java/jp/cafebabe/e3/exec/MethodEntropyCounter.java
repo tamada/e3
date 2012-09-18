@@ -9,11 +9,14 @@ public class MethodEntropyCounter extends DefaultEntropyCounter{
 
     private final String className;
     private final String methodName;
+    private final String threadName;
 
     public MethodEntropyCounter(final String className,
-                                final String methodName){
+                                final String methodName,
+                                final String threadName){
         this.className = className;
         this.methodName = methodName;
+        this.threadName = threadName;
     }
 
     public final String getClassName(){
@@ -22,5 +25,9 @@ public class MethodEntropyCounter extends DefaultEntropyCounter{
 
     public final String getMethodName(){
         return methodName;
+    }
+
+    public final String getThreadName(){
+        return threadName;
     }
 }
