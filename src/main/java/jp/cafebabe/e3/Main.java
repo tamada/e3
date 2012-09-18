@@ -29,7 +29,7 @@ import jp.cafebabe.e3.exec.result.ResultSet;
  */
 public class Main{
     public static enum Operation{
-        TRANSFORM, CALCULATE, EXECUTE,
+        TRANSFORM, CALCULATE, EXECUTE, EXIT
     };
 
     private static final int BUFFER_SIZE = 256;
@@ -37,6 +37,8 @@ public class Main{
     private String filterFile = null;
     private Operation operation = null;
     private MultipleResultSet mrs;
+    private List<String> errors = new ArrayList<String>();
+    private PrintWriter out;
 
     /**
      * Constructor.
@@ -45,20 +47,23 @@ public class Main{
      *            program arguments
      */
     public Main(final String[] args) throws IOException{
+        out = new PrintWriter(System.out);
         String[] arguments = parseOptions(args);
 
-        TransformFilter filter = null;
-        if(filterFile != null){
-            filter = new CsvTransformFilter(filterFile);
-        }
-        OpcodeExtractionTransformer transformer = new OpcodeExtractionTransformer(filter);
+        if(operation != Operation.EXIT){
+            TransformFilter filter = null;
+            if(filterFile != null){
+                filter = new CsvTransformFilter(filterFile);
+            }
+            OpcodeExtractionTransformer transformer = new OpcodeExtractionTransformer(filter);
 
-        if(operation == Operation.EXECUTE){
-            Launcher launcher = new Launcher(transformer, arguments);
-            launcher.perform();
-        }
-        else{
-            performArguments(arguments, transformer);
+            if(operation == Operation.EXECUTE){
+                Launcher launcher = new Launcher(transformer, arguments);
+                launcher.perform();
+            }
+            else{
+                performArguments(arguments, transformer);
+            }
         }
     }
 
@@ -74,8 +79,9 @@ public class Main{
                     perform(transformer, file);
                 }
             } catch(IOException e){
-                Logger.getLogger(getClass().getName()).log(Level.WARNING,
-                        e.getMessage(), e);
+                Logger.getLogger(getClass().getName()).log(
+                    Level.WARNING, e.getMessage(), e
+                );
             }
         }
         if(operation == Operation.CALCULATE){
@@ -188,26 +194,39 @@ public class Main{
         boolean exitFlag = false;
         for(int i = 0; i < args.length; i++){
             if(args[i].equals("-d") || args[i].equals("--dest")){
-                if(i <= args.length){
+                if((i + 1) < args.length){
                     dest = args[i + 1];
                     i++;
                 }
-            }
-            else if(args[i].equals("-c") || args[i].equals("--calculate")){
-                if(operation == null){
-                    operation = Operation.CALCULATE;
+                else{
+                    errors.add("no destination was specified");
                 }
             }
+            else if(args[i].equals("-c") || args[i].equals("--calculate")){
+                if(operation != null){
+                    errors.add("multiple execution option were specified");
+                }
+                operation = Operation.CALCULATE;
+            }
             else if(args[i].equals("-t") || args[i].equals("--transformed")){
+                if(operation != null){
+                    errors.add("multiple execution option were specified");
+                }
                 operation = Operation.TRANSFORM;
             }
             else if(args[i].equals("-e") || args[i].equals("--execute")){
+                if(operation != null){
+                    errors.add("multiple execution option were specified");
+                }
                 operation = Operation.EXECUTE;
             }
             else if(args[i].equals("-f") || args[i].equals("--filter")){
-                if(i <= args.length){
+                if((i + 1) < args.length){
                     filterFile = args[i + 1];
                     i++;
+                }
+                else{
+                    errors.add("no filter file was specified");
                 }
             }
             else if(args[i].equals("-h") || args[i].equals("--help")){
@@ -224,11 +243,30 @@ public class Main{
         }
         if(exitFlag){
             arguments = new String[0];
+            operation = Operation.EXIT;
         }
         if(operation == null){
             operation = Operation.CALCULATE;
         }
+        if(operation != Operation.EXIT && arguments.length == 0){
+            errors.add("no targets were given");
+        }
+
+        if(errors.size() > 0){
+            showErrors(errors);
+            operation = Operation.EXIT;
+        }
         return arguments;
+    }
+
+    private void showErrors(List<String> errors){
+        out.println();
+        out.println("ERRORS");
+        for(String error: errors){
+            out.print("  ");
+            out.println(error);
+        }
+        out.flush();
     }
 
     private void showHelp(){
@@ -271,7 +309,8 @@ public class Main{
         sb.append(ln);
         sb.append("TARGETS").append(ln);
         sb.append("  Accept Java class files and jar files.");
-        System.out.println(new String(sb));
+        out.println(new String(sb));
+        out.flush();
     }
 
     /**
