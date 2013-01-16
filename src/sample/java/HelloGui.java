@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 public class HelloGui{
   public HelloGui(){
@@ -12,6 +13,10 @@ public class HelloGui{
   }
 
   public static void main(String[] args){
-    new HelloGui();
+    SwingUtilities.invokeLater(new Thread(){
+      public void run(){
+          new HelloGui();
+      }
+    });
   }
 }

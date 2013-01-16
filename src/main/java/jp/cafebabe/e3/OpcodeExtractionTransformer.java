@@ -42,14 +42,19 @@ public final class OpcodeExtractionTransformer implements ClassFileTransformer{
     public byte[] transform(final ClassLoader loader, final String className,
                             final Class<?> type, final ProtectionDomain domain,
                             final byte[] originalData){
-        return transform(className, originalData);
+        return transform(className, originalData, loader);
     }
 
     public byte[] transform(final String className, final byte[] originalData){
+        return transform(className, originalData, getClass().getClassLoader());
+    }
+
+    public byte[] transform(final String className, final byte[] originalData, ClassLoader loader){
         if(filter.isTarget(className)){
             ClassReader reader = new ClassReader(originalData);
-            ClassWriter writer = new ClassWriter(
-                ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS
+            ClassWriter writer = new E3ClassWriter(
+                ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS,
+                loader
             );
             OpcodeExtractVisitor visitor = new OpcodeExtractVisitor(writer);
             reader.accept(visitor, 0);

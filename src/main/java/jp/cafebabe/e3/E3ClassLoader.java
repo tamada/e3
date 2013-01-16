@@ -41,7 +41,7 @@ public class E3ClassLoader extends ClassLoader{
         Class<?> transformedClass = null;
         byte[] originalData = readOriginalData(clazz);
         if(originalData != null){
-            byte[] transformedData = transformer.transform(name, originalData);
+            byte[] transformedData = transformer.transform(name, originalData, this);
 
             Class<?> newClazz = defineClass(name, transformedData, 0, transformedData.length);
             if(newClazz != null){

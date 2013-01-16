@@ -1,12 +1,15 @@
 package jp.cafebabe.e3;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -69,14 +72,16 @@ public class Main{
 
     private void performArguments(String[] arguments,
             OpcodeExtractionTransformer transformer)
-            throws UnsupportedEncodingException{
+            throws UnsupportedEncodingException, IOException{
+        ClassLoader loader = buildClassLoader(arguments);
+
         for(String file: arguments){
             try{
                 if(file.endsWith(".jar")){
-                    performJar(transformer, file);
+                    performJar(transformer, file, loader);
                 }
                 else{
-                    perform(transformer, file);
+                    perform(transformer, file, loader);
                 }
             } catch(IOException e){
                 Logger.getLogger(getClass().getName()).log(
@@ -89,9 +94,18 @@ public class Main{
         }
     }
 
+    private ClassLoader buildClassLoader(String[] args) throws IOException{
+        List<URL> urls = new ArrayList<URL>();
+        for(String arg: args){
+            urls.add(new File(arg).toURI().toURL());
+        }
+        return new URLClassLoader(urls.toArray(new URL[urls.size()]));
+    }
+
     private void performJar(final OpcodeExtractionTransformer transformer,
-            final String jarFile) throws IOException{
+            final String jarFile, final ClassLoader loader) throws IOException{
         JarFile jar = new JarFile(jarFile);
+        // TODO
         for(Enumeration<JarEntry> e = jar.entries(); e.hasMoreElements();){
             JarEntry entry = e.nextElement();
             String name = entry.getName();
@@ -102,7 +116,7 @@ public class Main{
                 byte[] original = getData(jar, entry);
 
                 if(operation == Operation.TRANSFORM){
-                    transform(transformer, className, original);
+                    transform(transformer, className, original, loader);
                 }
                 else{
                     calculate(className, original);
@@ -120,12 +134,12 @@ public class Main{
      *             I/O error.
      */
     private void perform(final OpcodeExtractionTransformer transformer,
-            final String file) throws IOException{
+            final String file, final ClassLoader loader) throws IOException{
         byte[] original = getData(file);
         String className = ClassNameExtractVisitor.parseClassName(original);
 
         if(operation == Operation.TRANSFORM){
-            transform(transformer, className, original);
+            transform(transformer, className, original, loader);
         }
         else{
             calculate(className, original);
@@ -142,8 +156,8 @@ public class Main{
     }
 
     private void transform(final OpcodeExtractionTransformer transformer,
-            final String className, final byte[] data){
-        byte[] transformed = transformer.transform(className, data);
+            final String className, final byte[] data, final ClassLoader loader){
+        byte[] transformed = transformer.transform(className, data, loader);
         if(transformed == null){
             transformed = data;
         }
