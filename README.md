@@ -1,3 +1,5 @@
+This project is obsolete, therefore, archived.
+
 # e3: 動的エントロピー計測器
 
 * First released: 2012. 3.18 (Sun)
